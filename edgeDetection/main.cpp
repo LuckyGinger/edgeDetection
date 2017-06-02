@@ -24,11 +24,11 @@
 //initial min and max HSV filter values.
 //these will be changed using trackbars
 int H_MIN = 0;
-int H_MAX = 256;
+int H_MAX = 179;
 int S_MIN = 0;
-int S_MAX = 256;
+int S_MAX = 255;
 int V_MIN = 0;
-int V_MAX = 256;
+int V_MAX = 255;
 //default capture width and height
 const int FRAME_WIDTH = 640;
 const int FRAME_HEIGHT = 480;
@@ -61,6 +61,58 @@ string intToString(int number) {
 	return ss.str();
 }
 
+void drawLines(Mat image)
+{
+	// draw Cube lines on live feed
+
+	int centerY = image.rows / 2;
+	int centerX = image.cols / 2;
+
+
+	for (int y = 0; y < image.rows; y++) // y = rows
+	{
+
+		for (int x = 0; x < image.cols; x++) // x = cols
+		{
+
+			Vec3b bgrPixel = image.at<Vec3b>(y, x);
+
+			// Pink lines
+			if ((x == centerX - 51 || x == centerX - 50 || x == centerX - 49 ||
+				x == centerX + 51 || x == centerX + 50 || x == centerX + 49 ||
+				y == centerY - 51 || y == centerY - 50 || y == centerY - 49 ||
+				y == centerY + 51 || y == centerY + 50 || y == centerY + 49) &&
+				x >= centerX - 151 && x <= centerX + 151 &&
+				y >= centerY - 151 && y <= centerY + 151)
+			{
+				bgrPixel[0] = 0;
+				bgrPixel[1] = 0;
+				bgrPixel[2] = 0;
+
+				image.at<Vec3b>(y, x) = bgrPixel;
+			}
+
+			// Black lines
+			if ((x == centerX - 151 || x == centerX - 150 || x == centerX - 149 ||
+				x == centerX + 151 || x == centerX + 150 || x == centerX + 149 ||
+				y == centerY - 151 || y == centerY - 150 || y == centerY - 149 ||
+				y == centerY + 151 || y == centerY + 150 || y == centerY + 149) &&
+				x >= centerX - 151 && x <= centerX + 151 &&
+				y >= centerY - 151 && y <= centerY + 151)
+			{
+				bgrPixel[0] = 0;
+				bgrPixel[1] = 0;
+				bgrPixel[2] = 0;
+
+				image.at<Vec3b>(y, x) = bgrPixel;
+			}
+
+		}
+
+	}
+
+	return;
+}
 
 void createTrackbars() {
 	//create window for trackbars
@@ -306,7 +358,7 @@ void trackFilteredObject(CubeColor theColor, int &x, int &y, Mat threshold, Mat 
 int main(int argc, char* argv[])
 {
 	int cam = 1;
-	int loc = 0; // 0 = myApt, 1 = Campus, 3 = Not set
+	int loc = 1; // 0 = myApt, 1 = Campus, 3 = Not set
 
 	//some boolean variables for different functionality within this
 	//program
@@ -315,6 +367,7 @@ int main(int argc, char* argv[])
 	bool calibrationMode = false;
 	//Matrix to store each frame of the webcam feed
 	Mat cameraFeed;
+	Mat cameraShow;
 	//matrix storage for HSV image
 	Mat HSV;
 	//matrix storage for binary threshold image
@@ -332,7 +385,7 @@ int main(int argc, char* argv[])
 	capture.set(CV_CAP_PROP_FRAME_WIDTH, FRAME_WIDTH);
 	capture.set(CV_CAP_PROP_FRAME_HEIGHT, FRAME_HEIGHT);
 	// capture.set(CAP_PROP_AUTOFOCUS, 0);
-	capture.set(CAP_PROP_BRIGHTNESS, 110.0);
+	//capture.set(CAP_PROP_BRIGHTNESS, 110.0);
 
 	//cout << capture.get(CAP_PROP_BRIGHTNESS) << endl;
 	//start an infinite loop where webcam feed is copied to cameraFeed matrix
@@ -341,23 +394,32 @@ int main(int argc, char* argv[])
 	while (1) {
 		//store image to matrix
 		capture.read(cameraFeed);
+		capture.read(cameraShow);
+		drawLines(cameraShow);
 		//convert frame from BGR to HSV colorspace
+		cvtColor(cameraFeed, HSV, COLOR_BGR2HSV);
 
 		if (calibrationMode == true)
 		{
-			cvtColor(cameraFeed, HSV, COLOR_BGR2HSV);
 			color.setHSVmin(Scalar(H_MIN, S_MIN, V_MIN));
 			color.setHSVmax(Scalar(H_MAX, S_MAX, V_MAX));
+			
+			//filter HSV image between values and store filtered image to
+			//threshold matrix
 			inRange(HSV, color.getHSVmin(), color.getHSVmax(), threshold);
-			inRange(HSV, Scalar(180 + H_MIN, S_MIN, V_MIN), Scalar( 180 + H_MAX, S_MAX, V_MAX), threshold2);
-			threshold = threshold | threshold2;
+			//inRange(cameraFeed, Scalar(180 + H_MIN, S_MIN, V_MIN), Scalar( 180 + H_MAX, S_MAX, V_MAX), threshold2);
+			//threshold = threshold | threshold2;
 
 
-//			cvtColor(cameraFeed, HSV, COLOR_BGR2HSV);
-			//inRange(HSV, color.getHSVmin(), color.getHSVmax(), threshold);
+			// Perform morphological operations on thresholded image to eliminate noise
+			//  and emphasize the filtered object(s)morphOps(threshold);
 			morphOps(threshold);
+			// Display threshold
 			imshow(windowName2, threshold);
-			trackFilteredObject(color, x, y, threshold, cameraFeed);
+			// This function will return the x and y coordinates of the
+			//  filtered object
+			trackFilteredObject(color, x, y, threshold, cameraShow);
+			//trackFilteredObject(color, x, y, threshold, cameraFeed);
 		}
 		else {
 			CubeColor red("red", loc), green("green", loc), blue("blue", loc);
@@ -371,69 +433,62 @@ int main(int argc, char* argv[])
 
 			// RED COLOR
 			//cvtColor(cameraFeed, HSV, COLOR_BGR2HSV);
-			inRange(cameraFeed, red.getHSVmin(), red.getHSVmax(), threshold);
-			inRange(cameraFeed, Scalar(180 + red.getHSVmin()[0], red.getHSVmin()[1], red.getHSVmin()[2]), Scalar(180 + red.getHSVmax()[0], red.getHSVmax()[1], red.getHSVmax()[2]), threshold2);
+			inRange(HSV, red.getHSVmin(), red.getHSVmax(), threshold);
+			//inRange(cameraFeed, Scalar(180 + red.getHSVmin()[0], red.getHSVmin()[1], red.getHSVmin()[2]), Scalar(180 + red.getHSVmax()[0], red.getHSVmax()[1], red.getHSVmax()[2]), threshold2);
 			threshold = threshold | threshold2;
 			//cout << red.getHSVmin()[0] << " " << red.getHSVmin()[1] << " " << red.getHSVmin()[2] << endl;
 			morphOps(threshold);
 			imshow(windowName2, threshold);
-			trackFilteredObject(red, x, y, threshold, cameraFeed);
+			trackFilteredObject(red, x, y, threshold, cameraShow);
 
 			// GREEN COLOR
 			//cvtColor(cameraFeed, HSV, COLOR_BGR2HSV);
-			inRange(cameraFeed, green.getHSVmin(), green.getHSVmax(), threshold);
+			inRange(HSV, green.getHSVmin(), green.getHSVmax(), threshold);
 			morphOps(threshold);
-			trackFilteredObject(green, x, y, threshold, cameraFeed);
+			trackFilteredObject(green, x, y, threshold, cameraShow);
 
 			// BLUE COLOR
 			//cvtColor(cameraFeed, HSV, COLOR_BGR2HSV);
-			inRange(cameraFeed, blue.getHSVmin(), blue.getHSVmax(), threshold);
+			inRange(HSV, blue.getHSVmin(), blue.getHSVmax(), threshold);
 			morphOps(threshold);
-			trackFilteredObject(blue, x, y, threshold, cameraFeed);
+			trackFilteredObject(blue, x, y, threshold, cameraShow);
 
 			// WHITE COLOR
 			//cvtColor(cameraFeed, HSV, COLOR_BGR2HSV);
-			inRange(cameraFeed, white.getHSVmin(), white.getHSVmax(), threshold);
+			inRange(HSV, white.getHSVmin(), white.getHSVmax(), threshold);
 			morphOps(threshold);
-			trackFilteredObject(white, x, y, threshold, cameraFeed);
+			trackFilteredObject(white, x, y, threshold, cameraShow);
 
 			// ORANGE COLOR
 			//cvtColor(cameraFeed, HSV, COLOR_BGR2HSV);
-			inRange(cameraFeed, orange.getHSVmin(), orange.getHSVmax(), threshold);
+			inRange(HSV, orange.getHSVmin(), orange.getHSVmax(), threshold);
 			morphOps(threshold);
-			trackFilteredObject(orange, x, y, threshold, cameraFeed);
+			trackFilteredObject(orange, x, y, threshold, cameraShow);
 			
 
 			// YELLOW COLOR
 			//cvtColor(cameraFeed, HSV, COLOR_BGR2HSV);
-			inRange(cameraFeed, yellow.getHSVmin(), yellow.getHSVmax(), threshold);
+			inRange(HSV, yellow.getHSVmin(), yellow.getHSVmax(), threshold);
 			morphOps(threshold);
-			trackFilteredObject(yellow, x, y, threshold, cameraFeed);
+			trackFilteredObject(yellow, x, y, threshold, cameraShow);
 
 
 		}
-		//filter HSV image between values and store filtered image to
-		//threshold matrix
-		//inRange(HSV, Scalar(H_MIN, S_MIN, V_MIN), Scalar(H_MAX, S_MAX, V_MAX), threshold);
-		//perform morphological operations on thresholded image to eliminate noise
-		//and emphasize the filtered object(s)
-		/*if (useMorphOps)
-			morphOps(threshold);*/
-		//pass in thresholded frame to our object tracking function
-		//this function will return the x and y coordinates of the
-		//filtered object
-		//if (trackObjects)
-		//	trackFilteredObject(x, y, threshold, cameraFeed);
+		
+
 
 		//show frames 
 		//imshow(windowName2, threshold);
 		imshow(windowName, cameraFeed);
-		//imshow(windowName1, HSV);
+		imshow("Main Display", cameraShow);
+		imshow(windowName1, HSV);
 
 
 		//delay 30ms so that screen can refresh.
 		//image will not appear without this waitKey() command
-		waitKey(30);
+		if (cvWaitKey(30)!=-1) {
+			break;
+		}
 	}
 
 
