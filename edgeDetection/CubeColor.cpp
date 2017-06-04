@@ -31,7 +31,7 @@ CubeColor::CubeColor(string theColor, int loc)
 		}
 		else if(loc == 1) {
 			setHSVmin(Scalar(61, 182, 154));
-			setHSVmax(Scalar(77, 255, 255));
+			setHSVmax(Scalar(91, 255, 255));
 		}
 	
 		setColor(Scalar(0, 100, 0));

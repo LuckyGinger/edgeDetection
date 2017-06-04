@@ -143,10 +143,14 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="CubeColor.cpp" />
+    <ClCompile Include="CubeCube.cpp" />
+    <ClCompile Include="CubeFace.cpp" />
     <ClCompile Include="main.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="CubeColor.h" />
+    <ClInclude Include="CubeCube.h" />
+    <ClInclude Include="CubeFace.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

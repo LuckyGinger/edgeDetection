@@ -1,4 +1,4 @@
-//objectTrackingTutorial.cpp
+//winCubeSolver
 
 //Written by  Thom Allen  2017
 
@@ -85,9 +85,9 @@ void drawLines(Mat image)
 				x >= centerX - 151 && x <= centerX + 151 &&
 				y >= centerY - 151 && y <= centerY + 151)
 			{
-				bgrPixel[0] = 0;
-				bgrPixel[1] = 0;
-				bgrPixel[2] = 0;
+				bgrPixel[0] = 255;
+				bgrPixel[1] = 255;
+				bgrPixel[2] = 255;
 
 				image.at<Vec3b>(y, x) = bgrPixel;
 			}
@@ -100,9 +100,9 @@ void drawLines(Mat image)
 				x >= centerX - 151 && x <= centerX + 151 &&
 				y >= centerY - 151 && y <= centerY + 151)
 			{
-				bgrPixel[0] = 0;
-				bgrPixel[1] = 0;
-				bgrPixel[2] = 0;
+				bgrPixel[0] = 255;
+				bgrPixel[1] = 255;
+				bgrPixel[2] = 255;
 
 				image.at<Vec3b>(y, x) = bgrPixel;
 			}
@@ -384,6 +384,7 @@ int main(int argc, char* argv[])
 	//set height and width of capture frame
 	capture.set(CV_CAP_PROP_FRAME_WIDTH, FRAME_WIDTH);
 	capture.set(CV_CAP_PROP_FRAME_HEIGHT, FRAME_HEIGHT);
+	//capture.set(CV_CAP_PROP_EXPOSURE, 75);
 	// capture.set(CAP_PROP_AUTOFOCUS, 0);
 	//capture.set(CAP_PROP_BRIGHTNESS, 110.0);
 
@@ -432,42 +433,42 @@ int main(int argc, char* argv[])
 			//red.setHSVmax(Scalar(25, 256, 234));
 
 			// RED COLOR
-			//cvtColor(cameraFeed, HSV, COLOR_BGR2HSV);
+			cvtColor(cameraFeed, HSV, COLOR_BGR2HSV);
 			inRange(HSV, red.getHSVmin(), red.getHSVmax(), threshold);
 			//inRange(cameraFeed, Scalar(180 + red.getHSVmin()[0], red.getHSVmin()[1], red.getHSVmin()[2]), Scalar(180 + red.getHSVmax()[0], red.getHSVmax()[1], red.getHSVmax()[2]), threshold2);
-			threshold = threshold | threshold2;
+			//threshold = threshold | threshold2;
 			//cout << red.getHSVmin()[0] << " " << red.getHSVmin()[1] << " " << red.getHSVmin()[2] << endl;
 			morphOps(threshold);
 			imshow(windowName2, threshold);
 			trackFilteredObject(red, x, y, threshold, cameraShow);
 
 			// GREEN COLOR
-			//cvtColor(cameraFeed, HSV, COLOR_BGR2HSV);
+			cvtColor(cameraFeed, HSV, COLOR_BGR2HSV);
 			inRange(HSV, green.getHSVmin(), green.getHSVmax(), threshold);
 			morphOps(threshold);
 			trackFilteredObject(green, x, y, threshold, cameraShow);
 
 			// BLUE COLOR
-			//cvtColor(cameraFeed, HSV, COLOR_BGR2HSV);
+			cvtColor(cameraFeed, HSV, COLOR_BGR2HSV);
 			inRange(HSV, blue.getHSVmin(), blue.getHSVmax(), threshold);
 			morphOps(threshold);
 			trackFilteredObject(blue, x, y, threshold, cameraShow);
 
 			// WHITE COLOR
-			//cvtColor(cameraFeed, HSV, COLOR_BGR2HSV);
+			cvtColor(cameraFeed, HSV, COLOR_BGR2HSV);
 			inRange(HSV, white.getHSVmin(), white.getHSVmax(), threshold);
 			morphOps(threshold);
 			trackFilteredObject(white, x, y, threshold, cameraShow);
 
 			// ORANGE COLOR
-			//cvtColor(cameraFeed, HSV, COLOR_BGR2HSV);
+			cvtColor(cameraFeed, HSV, COLOR_BGR2HSV);
 			inRange(HSV, orange.getHSVmin(), orange.getHSVmax(), threshold);
 			morphOps(threshold);
 			trackFilteredObject(orange, x, y, threshold, cameraShow);
 			
 
 			// YELLOW COLOR
-			//cvtColor(cameraFeed, HSV, COLOR_BGR2HSV);
+			cvtColor(cameraFeed, HSV, COLOR_BGR2HSV);
 			inRange(HSV, yellow.getHSVmin(), yellow.getHSVmax(), threshold);
 			morphOps(threshold);
 			trackFilteredObject(yellow, x, y, threshold, cameraShow);
