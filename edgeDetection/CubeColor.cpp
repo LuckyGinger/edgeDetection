@@ -4,7 +4,7 @@
 
 CubeColor::CubeColor()
 {
-	setType("color!set");
+	setType("!color!set");
 	setColor(Scalar(0, 255, 0));
 }
 

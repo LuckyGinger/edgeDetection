@@ -18,7 +18,8 @@
 #include <iostream>
 #include <vector>
 #include "CubeColor.h"
-
+#include "CubeFace.h"
+#include "CubeCube.h"
 
 
 //initial min and max HSV filter values.
@@ -77,7 +78,7 @@ void drawLines(Mat image)
 
 			Vec3b bgrPixel = image.at<Vec3b>(y, x);
 
-			// Pink lines
+			// White Cross Section lines
 			if ((x == centerX - 51 || x == centerX - 50 || x == centerX - 49 ||
 				x == centerX + 51 || x == centerX + 50 || x == centerX + 49 ||
 				y == centerY - 51 || y == centerY - 50 || y == centerY - 49 ||
@@ -92,7 +93,7 @@ void drawLines(Mat image)
 				image.at<Vec3b>(y, x) = bgrPixel;
 			}
 
-			// Black lines
+			// White Border lines
 			if ((x == centerX - 151 || x == centerX - 150 || x == centerX - 149 ||
 				x == centerX + 151 || x == centerX + 150 || x == centerX + 149 ||
 				y == centerY - 151 || y == centerY - 150 || y == centerY - 149 ||
@@ -175,6 +176,7 @@ void drawObject(vector<CubeColor> theColors, Mat &frame, double area) {
 
 
 }
+
 void morphOps(Mat &thresh) {
 
 	//create structuring element that will be used to "dilate" and "erode" image.
@@ -194,6 +196,7 @@ void morphOps(Mat &thresh) {
 
 
 }
+
 void trackFilteredObject(int &x, int &y, Mat threshold, Mat &cameraFeed) {
 
 	vector <CubeColor> colors;
@@ -344,6 +347,10 @@ void trackFilteredObject(CubeColor theColor, int &x, int &y, Mat threshold, Mat 
 				putText(cameraFeed, "Tracking Objects " + to_string(counter), Point(0, 50), 2, 1, Scalar(0, 255, 0), 2);
 				//draw object location on screen
 				drawObject(colors, cameraFeed, area);
+				// todo: set up color counting
+				// todo: set up building cubeface
+				//setColors(CubeColor color, Mat image)
+
 			}
 			else {
 				putText(cameraFeed, error, Point(0, 50), 2, 1, Scalar(80, 127, 255), 2);
@@ -355,11 +362,102 @@ void trackFilteredObject(CubeColor theColor, int &x, int &y, Mat threshold, Mat 
 	}
 }
 
+void trackFilteredObject(CubeFace &face, CubeColor theColor, int &x, int &y, Mat threshold, Mat &cameraFeed) {
+
+	vector <CubeColor> colors;
+	Mat temp;
+	threshold.copyTo(temp);
+	//these two vectors needed for output of findContours
+	vector< vector<Point> > contours;
+	vector<Vec4i> hierarchy;
+	//find contours of filtered image using openCV findContours function
+	findContours(temp, contours, hierarchy, CV_RETR_CCOMP, CV_CHAIN_APPROX_SIMPLE);
+	//use moments method to find our filtered object
+	double refArea = 0;
+	bool objectFound = false;
+	int counter = 0;
+	string error = "";
+
+	if (hierarchy.size() > 0) {
+		int numObjects = hierarchy.size();
+		double area = 0;
+
+		//if number of objects greater than MAX_NUM_OBJECTS we have a noisy filter
+		if (numObjects <= MAX_NOISE) {
+			for (int index = 0; index >= 0; index = hierarchy[index][0]) {
+
+				Moments moment = moments((cv::Mat)contours[index]);
+				area = moment.m00;
+
+				//if the area is less than 20 px by 20px then it is probably just noise
+				//if the area is the same as the 3/2 of the image size, probably just a bad filter
+				//we only want the object with the largest area so we safe a reference area each
+				//iteration and compare it to the area in the next iteration.
+				//if (area>MIN_OBJECT_AREA && area<MAX_OBJECT_AREA && area>refArea) {
+				if (area>MIN_OBJECT_AREA && area<MAX_OBJECT_AREA) {
+					CubeColor color;
+
+					color.setXPos(moment.m10 / area);
+					color.setYPos(moment.m01 / area);
+					color.setType(theColor.getType());
+					color.setColor(theColor.getColor());
+
+					objectFound = true;
+					refArea = area;
+
+					colors.push_back(color);
+					counter++;
+				}
+				else if (area<MIN_OBJECT_AREA) {
+					objectFound = false;
+					error = "area < MIN_OBJECT_AREA";
+				}
+				else if (area > MAX_OBJECT_AREA) {
+					objectFound = false;
+					error = "area > MAX_OBJECT_AREA";
+				}
+				else if (area < refArea) {
+					objectFound = false;
+					error = "area < refArea";
+				}
+				else {
+					error = "Something is going wrong";
+					objectFound = false;
+
+				}
+
+
+			}
+
+			//let user know you found an object
+			if (objectFound == true) {
+				putText(cameraFeed, "Tracking Objects " + to_string(counter), Point(0, 50), 2, 1, Scalar(0, 255, 0), 2);
+				//draw object location on screen
+				drawObject(colors, cameraFeed, area);
+				// todo: set up color counting
+				// todo: set up building cubeface
+				face.setColors(colors, cameraFeed);
+
+			}
+			else {
+				putText(cameraFeed, error, Point(0, 50), 2, 1, Scalar(80, 127, 255), 2);
+
+			}
+
+		}
+		else putText(cameraFeed, "TOO MUCH NOISE! ADJUST FILTER", Point(0, 50), 1, 2, Scalar(0, 0, 255), 2);
+	}
+}
+
+
 int main(int argc, char* argv[])
 {
 	int cam = 1;
 	int loc = 1; // 0 = myApt, 1 = Campus, 3 = Not set
-
+	CubeCube cube;
+	CubeFace face;
+	CubeColor color;
+	
 	//some boolean variables for different functionality within this
 	//program
 	bool trackObjects = true;
@@ -375,8 +473,6 @@ int main(int argc, char* argv[])
 	Mat threshold2;
 	//x and y values for the location of the object
 	int x = 0, y = 0;
-	//create slider bars for HSV filtering
-	createTrackbars();
 	//video capture object to acquire webcam feed
 	VideoCapture capture;
 	//open capture object at location zero (default location for webcam)
@@ -384,14 +480,10 @@ int main(int argc, char* argv[])
 	//set height and width of capture frame
 	capture.set(CV_CAP_PROP_FRAME_WIDTH, FRAME_WIDTH);
 	capture.set(CV_CAP_PROP_FRAME_HEIGHT, FRAME_HEIGHT);
-	//capture.set(CV_CAP_PROP_EXPOSURE, 75);
-	// capture.set(CAP_PROP_AUTOFOCUS, 0);
-	//capture.set(CAP_PROP_BRIGHTNESS, 110.0);
 
-	//cout << capture.get(CAP_PROP_BRIGHTNESS) << endl;
+	
 	//start an infinite loop where webcam feed is copied to cameraFeed matrix
 	//all of our operations will be performed within this loop
-	CubeColor color;
 	while (1) {
 		//store image to matrix
 		capture.read(cameraFeed);
@@ -402,6 +494,9 @@ int main(int argc, char* argv[])
 
 		if (calibrationMode == true)
 		{
+			//create slider bars for HSV filtering
+			createTrackbars();
+
 			color.setHSVmin(Scalar(H_MIN, S_MIN, V_MIN));
 			color.setHSVmax(Scalar(H_MAX, S_MAX, V_MAX));
 			
@@ -435,43 +530,41 @@ int main(int argc, char* argv[])
 			// RED COLOR
 			cvtColor(cameraFeed, HSV, COLOR_BGR2HSV);
 			inRange(HSV, red.getHSVmin(), red.getHSVmax(), threshold);
-			//inRange(cameraFeed, Scalar(180 + red.getHSVmin()[0], red.getHSVmin()[1], red.getHSVmin()[2]), Scalar(180 + red.getHSVmax()[0], red.getHSVmax()[1], red.getHSVmax()[2]), threshold2);
-			//threshold = threshold | threshold2;
-			//cout << red.getHSVmin()[0] << " " << red.getHSVmin()[1] << " " << red.getHSVmin()[2] << endl;
 			morphOps(threshold);
-			imshow(windowName2, threshold);
-			trackFilteredObject(red, x, y, threshold, cameraShow);
+			//imshow(windowName2, threshold);
+			trackFilteredObject(face, red, x, y, threshold, cameraShow);
+
 
 			// GREEN COLOR
 			cvtColor(cameraFeed, HSV, COLOR_BGR2HSV);
 			inRange(HSV, green.getHSVmin(), green.getHSVmax(), threshold);
 			morphOps(threshold);
-			trackFilteredObject(green, x, y, threshold, cameraShow);
+			trackFilteredObject(face, green, x, y, threshold, cameraShow);
 
 			// BLUE COLOR
 			cvtColor(cameraFeed, HSV, COLOR_BGR2HSV);
 			inRange(HSV, blue.getHSVmin(), blue.getHSVmax(), threshold);
 			morphOps(threshold);
-			trackFilteredObject(blue, x, y, threshold, cameraShow);
+			trackFilteredObject(face, blue, x, y, threshold, cameraShow);
 
 			// WHITE COLOR
 			cvtColor(cameraFeed, HSV, COLOR_BGR2HSV);
 			inRange(HSV, white.getHSVmin(), white.getHSVmax(), threshold);
 			morphOps(threshold);
-			trackFilteredObject(white, x, y, threshold, cameraShow);
+			trackFilteredObject(face, white, x, y, threshold, cameraShow);
 
 			// ORANGE COLOR
 			cvtColor(cameraFeed, HSV, COLOR_BGR2HSV);
 			inRange(HSV, orange.getHSVmin(), orange.getHSVmax(), threshold);
 			morphOps(threshold);
-			trackFilteredObject(orange, x, y, threshold, cameraShow);
+			trackFilteredObject(face, orange, x, y, threshold, cameraShow);
 			
 
 			// YELLOW COLOR
 			cvtColor(cameraFeed, HSV, COLOR_BGR2HSV);
 			inRange(HSV, yellow.getHSVmin(), yellow.getHSVmax(), threshold);
 			morphOps(threshold);
-			trackFilteredObject(yellow, x, y, threshold, cameraShow);
+			trackFilteredObject(face, yellow, x, y, threshold, cameraShow);
 
 
 		}
@@ -490,6 +583,7 @@ int main(int argc, char* argv[])
 		if (cvWaitKey(30)!=-1) {
 			break;
 		}
+		face.displayFace();
 	}
 
 

@@ -10,5 +10,7 @@ private:
 	static const int MAX_FACES = 6;
 	CubeFace cube[MAX_FACES];
 
+
+	
 };
 

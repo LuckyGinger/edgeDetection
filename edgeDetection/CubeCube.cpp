@@ -3,7 +3,7 @@
 
 
 CubeCube::CubeCube()
-{
+{ 
 }
 
 
