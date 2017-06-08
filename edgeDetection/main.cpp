@@ -410,18 +410,18 @@ void trackFilteredObject(CubeFace &face, CubeColor theColor, int &x, int &y, Mat
 				}
 				else if (area<MIN_OBJECT_AREA) {
 					objectFound = false;
-					error = "area < MIN_OBJECT_AREA";
+					//error = "area < MIN_OBJECT_AREA";
 				}
 				else if (area > MAX_OBJECT_AREA) {
 					objectFound = false;
-					error = "area > MAX_OBJECT_AREA";
+					//error = "area > MAX_OBJECT_AREA";
 				}
 				else if (area < refArea) {
 					objectFound = false;
-					error = "area < refArea";
+					//error = "area < refArea";
 				}
 				else {
-					error = "Something is going wrong";
+					//error = "Something is going wrong";
 					objectFound = false;
 
 				}
@@ -431,7 +431,7 @@ void trackFilteredObject(CubeFace &face, CubeColor theColor, int &x, int &y, Mat
 
 			//let user know you found an object
 			if (objectFound == true) {
-				putText(cameraFeed, "Tracking Objects " + to_string(counter), Point(0, 50), 2, 1, Scalar(0, 255, 0), 2);
+				//putText(cameraFeed, "Tracking Objects " + to_string(counter), Point(0, 50), 2, 1, Scalar(0, 255, 0), 2);
 				//draw object location on screen
 				drawObject(colors, cameraFeed, area);
 				// todo: set up color counting
@@ -440,12 +440,12 @@ void trackFilteredObject(CubeFace &face, CubeColor theColor, int &x, int &y, Mat
 
 			}
 			else {
-				putText(cameraFeed, error, Point(0, 50), 2, 1, Scalar(80, 127, 255), 2);
+				//putText(cameraFeed, error, Point(0, 50), 2, 1, Scalar(80, 127, 255), 2);
 
 			}
 
 		}
-		else putText(cameraFeed, "TOO MUCH NOISE! ADJUST FILTER", Point(0, 50), 1, 2, Scalar(0, 0, 255), 2);
+		//		else putText(cameraFeed, "TOO MUCH NOISE! ADJUST FILTER", Point(0, 50), 1, 2, Scalar(0, 0, 255), 2);
 	}
 }
 
