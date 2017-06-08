@@ -12,6 +12,28 @@ CubeFace::~CubeFace()
 	//delete[] face;
 }
 
+CubeColor CubeFace::getColors(int loc)
+{
+	switch (loc)
+	{
+	case 0:
+	case 1:
+	case 2:
+	case 3:
+	case 4:
+	case 5:
+	case 6:
+	case 7:
+	case 8:
+		return CubeFace::face[loc];
+		break;
+	default:
+		throw new string("Error invalid Selection");
+		break;
+	}
+
+}
+
 void CubeFace::setColors(vector<CubeColor> colors, Mat image)
 {
 	int centerY = image.rows / 2;

@@ -566,6 +566,7 @@ int main(int argc, char* argv[])
 			morphOps(threshold);
 			trackFilteredObject(face, yellow, x, y, threshold, cameraShow);
 
+			cube.setFace(face);
 
 		}
 		
@@ -583,7 +584,8 @@ int main(int argc, char* argv[])
 		if (cvWaitKey(30)!=-1) {
 			break;
 		}
-		face.displayFace();
+		//face.displayFace();
+		cube.displayCube();
 	}
 
 

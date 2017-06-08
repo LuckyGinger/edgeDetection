@@ -10,6 +10,8 @@ public:
 
 	void setColors(vector<CubeColor> color, Mat image);
 
+	CubeColor getColors(int loc);
+
 	void displayFace();
 
 private:
