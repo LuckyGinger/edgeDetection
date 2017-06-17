@@ -24,6 +24,8 @@ public:
 	string getType();
 	void setType(string theColor);
 
+	char getTypeChar();
+
 	Scalar getHSVmin();
 	void setHSVmin(Scalar min);
 

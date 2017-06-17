@@ -141,3 +141,7 @@ void CubeColor::setType(string theColor)
 {
 	CubeColor::type = theColor;
 }
+
+char CubeColor::getTypeChar() {
+	return CubeColor::getType().at(0);
+}

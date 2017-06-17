@@ -45,6 +45,16 @@ const string windowName1 = "HSV Image";
 const string windowName2 = "Thresholded Image";
 const string windowName3 = "After Morphological Operations";
 const string trackbarWindowName = "Trackbars";
+
+// Click Button
+Mat3b canvas;
+string buttonText = "Set Face";
+string winName = "My cool button GUI v0.1";
+Rect button;
+
+CubeCube cube;
+CubeFace face;
+
 void on_trackbar(int, void*)
 {//This function gets called whenever a
  // trackbar position is changed
@@ -449,15 +459,63 @@ void trackFilteredObject(CubeFace &face, CubeColor theColor, int &x, int &y, Mat
 	}
 }
 
+void callBackFunc(int event, int x, int y, int flags, void* userdata)
+{
+	if (event == EVENT_LBUTTONDOWN)
+	{
+		if (button.contains(Point(x, y)))
+		{
+			cout << "Clicked!" << endl;
+			cube.setFace(face);
+
+			rectangle(canvas(button), button, Scalar(0, 0, 255), 2);
+		}
+	}
+	if (event == EVENT_LBUTTONUP)
+	{
+		rectangle(canvas, button, Scalar(200, 200, 200), 2);
+	}
+
+	imshow(winName, canvas);
+	waitKey(1);
+}
+
+void clickFace()
+{
+	// An image
+	Mat3b img(300, 300, Vec3b(0, 255, 0));
+
+	// Your button
+	button = Rect(0, 0, img.cols, 50);
+
+	// The canvas
+	canvas = Mat3b(img.rows + button.height, img.cols, Vec3b(0, 0, 0));
+
+	// Draw the button
+	canvas(button) = Vec3b(200, 200, 200);
+	putText(canvas(button), buttonText, Point(button.width*0.35, button.height*0.7), FONT_HERSHEY_PLAIN, 1, Scalar(0, 0, 0));
+
+	// Draw the image
+	img.copyTo(canvas(Rect(0, button.height, img.cols, img.rows)));
+
+	// Setup callback function
+	namedWindow(winName);
+	setMouseCallback(winName, callBackFunc);
+
+	imshow(winName, canvas);
+
+}
+
 
 int main(int argc, char* argv[])
 {
 	int cam = 1;
 	int loc = 1; // 0 = myApt, 1 = Campus, 3 = Not set
-	CubeCube cube;
-	CubeFace face;
+
 	CubeColor color;
 	
+	clickFace();
+
 	//some boolean variables for different functionality within this
 	//program
 	bool trackObjects = true;
@@ -471,6 +529,9 @@ int main(int argc, char* argv[])
 	//matrix storage for binary threshold image
 	Mat threshold;
 	Mat threshold2;
+	//create slider bars for HSV filtering
+	createTrackbars();
+
 	//x and y values for the location of the object
 	int x = 0, y = 0;
 	//video capture object to acquire webcam feed
@@ -484,6 +545,9 @@ int main(int argc, char* argv[])
 	
 	//start an infinite loop where webcam feed is copied to cameraFeed matrix
 	//all of our operations will be performed within this loop
+	int faceCounter = 0;
+	CubeFace tempFace;
+	bool isFirstPass = true;
 	while (1) {
 		//store image to matrix
 		capture.read(cameraFeed);
@@ -494,8 +558,6 @@ int main(int argc, char* argv[])
 
 		if (calibrationMode == true)
 		{
-			//create slider bars for HSV filtering
-			createTrackbars();
 
 			color.setHSVmin(Scalar(H_MIN, S_MIN, V_MIN));
 			color.setHSVmax(Scalar(H_MAX, S_MAX, V_MAX));
@@ -566,7 +628,15 @@ int main(int argc, char* argv[])
 			morphOps(threshold);
 			trackFilteredObject(face, yellow, x, y, threshold, cameraShow);
 
-			cube.setFace(face);
+			//cube.displayClick();
+			//clickFace();
+			
+			//if (isFirstPass)
+			//{
+			//	tempFace = face;
+			//	isFirstPass = false;
+			//}
+
 
 		}
 		

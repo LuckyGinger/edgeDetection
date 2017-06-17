@@ -11,6 +11,9 @@ public:
 	void setColors(vector<CubeColor> color, Mat image);
 
 	CubeColor getColors(int loc);
+	CubeColor getCenter();
+
+	void rotateClockwise(int num);
 
 	void displayFace();
 

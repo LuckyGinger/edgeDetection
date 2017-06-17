@@ -3,7 +3,7 @@
 
 
 CubeCube::CubeCube()
-{ 
+{
 }
 
 
@@ -11,52 +11,97 @@ CubeCube::~CubeCube()
 {
 }
 
+void CubeCube::setOrient(char c)
+{
+	// Read from orient file
+	ifstream infile("colordata.txt");
+
+	string line;
+	while (getline(infile, line))
+	{
+		if (line[0] == c)
+		{
+			CubeCube::orient = line; // set the orient string
+		}
+	}
+}
+
+void CubeCube::orientFaces()
+{
+
+}
+
 void CubeCube::setFace(CubeFace theFace)
 {
-	int center = 4;
-	CubeColor centerColor = theFace.getColors(center);
-	char color = centerColor.getType().at(0);
+
+	char color = theFace.getCenter().getTypeChar();
+
+	if (!bottomFace)
+	{
+		bottomFace = color;
+		setOrient(color);
+	}
 
 
 	// get the center color for the face
 	if (color == 'r')
 	{
-		CubeCube::cube[r] = theFace;
+		if (CubeCube::cube[r].getCenter().getTypeChar() == '!')  // Once set colors shouldn't change
+		{
+			CubeCube::cube[r] = theFace;
+		}
 
 	}
 	else if (color == 'g')
 	{
-		CubeCube::cube[g] = theFace;
-
+		if (CubeCube::cube[g].getCenter().getTypeChar() == '!')  // Once set colors shouldn't change
+		{
+			CubeCube::cube[g] = theFace;
+		}
 	}
 	else if (color == 'b')
 	{
-		CubeCube::cube[b] = theFace;
+		if (CubeCube::cube[b].getCenter().getTypeChar() == '!')  // Once set colors shouldn't change
+		{
+			CubeCube::cube[b] = theFace;
+		}
 
 	}
 	else if (color == 'w')
 	{
-		CubeCube::cube[w] = theFace;
+		if (CubeCube::cube[w].getCenter().getTypeChar() == '!')  // Once set colors shouldn't change
+		{
+			CubeCube::cube[w] = theFace;
+		}
 
 	}
 	else if (color == 'o')
 	{
-		CubeCube::cube[o] = theFace;
+		if (CubeCube::cube[o].getCenter().getTypeChar() == '!')  // Once set colors shouldn't change
+		{
+			CubeCube::cube[o] = theFace;
+		}
 
 	}
 	else if (color == 'y')
 	{
-		CubeCube::cube[y] = theFace;
+		if (CubeCube::cube[y].getCenter().getTypeChar() == '!')  // Once set colors shouldn't change
+		{
+			CubeCube::cube[y] = theFace;
+		}
 	}
 
 	//throw new string("Error invalid color");
 
 	//}
+
+	orientFaces();
 }
 
 
 void CubeCube::displayCube()
 {
+	cout << "Bottom Face: " << bottomFace << " " << orient << endl;
 	string hrz = " +---+---+---+";
 
 	cout << setw(28) << hrz << endl;

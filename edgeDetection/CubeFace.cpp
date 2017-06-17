@@ -12,6 +12,39 @@ CubeFace::~CubeFace()
 	//delete[] face;
 }
 
+void CubeFace::rotateClockwise(int num)
+{
+	CubeColor temp[MAX_COLORS];
+
+	for (int i = 0; i < num; i++)
+	{
+		// Top Left Color
+		temp[0] = face[6];
+		// Top Middle Color
+		temp[1] = face[3];
+		// Top Right Color
+		temp[2] = face[0];
+		// Center Left Color
+		temp[3] = face[7];
+		// Center Middle Color (stays the same)
+ 		temp[4] = face[4];
+		// Center Right Color
+		temp[5] = face[1];
+		// Bottom Left Color
+		temp[6] = face[8];
+		// Bottom Middle Color
+		temp[7] = face[5];
+		// Bottom Right Color
+		temp[8] = face[2];
+		for (int i = 0; i < MAX_COLORS; i++)
+		{
+			face[i] = temp[i];
+		}
+	}
+
+	return;
+}
+
 CubeColor CubeFace::getColors(int loc)
 {
 	switch (loc)
@@ -32,6 +65,12 @@ CubeColor CubeFace::getColors(int loc)
 		break;
 	}
 
+}
+
+CubeColor CubeFace::getCenter()
+{
+	// Return the center color
+	return CubeFace::getColors(4);
 }
 
 void CubeFace::setColors(vector<CubeColor> colors, Mat image)
