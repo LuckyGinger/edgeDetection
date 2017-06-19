@@ -17,13 +17,30 @@ void CubeCube::setOrient(char c)
 	ifstream infile("colordata.txt");
 
 	string line;
+	string temp;
 	while (getline(infile, line))
 	{
 		if (line[0] == c)
 		{
-			CubeCube::orient = line; // set the orient string
+			temp = line;
+			CubeCube::orient = line.substr(2, 7); // set the orient string
+			CubeCube::orientChar = temp.substr(9, 15);
+			cout << orient << endl;
+			cout << orientChar << endl;
 		}
 	}
+	infile.close();
+
+	// Because I have no idea how else to do this...
+	// Converts strings to int
+	// string "31245" to int of one number totalling 6 numbers
+	_f[0] = orient.c_str()[0] - '0';
+	_f[1] = orient.c_str()[1] - '0';
+	_f[2] = orient.c_str()[2] - '0';
+	_f[3] = orient.c_str()[3] - '0';
+	_f[4] = orient.c_str()[4] - '0';
+	_f[5] = orient.c_str()[5] - '0';
+
 }
 
 void CubeCube::orientFaces()
@@ -31,10 +48,34 @@ void CubeCube::orientFaces()
 
 }
 
+int colortoi(char c)
+{
+	switch (c)
+	{
+	case 'r':
+		return 0;
+	case 'g':
+		return 1;
+	case 'b':
+		return 2;
+	case 'w':
+		return 3;
+	case 'o':
+		return 4;
+	case 'y':
+		return 5;
+	}
+
+	return -1; // bad color input
+}
+
 void CubeCube::setFace(CubeFace theFace)
 {
 
-	char color = theFace.getCenter().getTypeChar();
+	char color = (char)theFace.getCenter().getTypeChar();
+
+	// convert the color
+//	int c = colortoi(color)
 
 	if (!bottomFace)
 	{
@@ -44,50 +85,58 @@ void CubeCube::setFace(CubeFace theFace)
 
 
 	// get the center color for the face
-	if (color == 'r')
+	cout << orientChar[0] << endl;
+	cout << color << endl;
+	cout << _f[0] << endl;
+	cout << _f[1] << endl;
+	cout << _f[2] << endl;
+	cout << _f[3] << endl;
+	cout << _f[4] << endl;
+	cout << _f[5] << endl;
+	if (color == orientChar[0])
 	{
-		if (CubeCube::cube[r].getCenter().getTypeChar() == '!')  // Once set colors shouldn't change
+		if (CubeCube::cube[_f[0]].getCenter().getTypeChar() == '!')  // Once set colors shouldn't change
 		{
-			CubeCube::cube[r] = theFace;
+			CubeCube::cube[_f[0]] = theFace;
 		}
 
 	}
-	else if (color == 'g')
+	else if (color == orientChar[1])
 	{
-		if (CubeCube::cube[g].getCenter().getTypeChar() == '!')  // Once set colors shouldn't change
+		if (CubeCube::cube[_f[1]].getCenter().getTypeChar() == '!')  // Once set colors shouldn't change
 		{
-			CubeCube::cube[g] = theFace;
+			CubeCube::cube[_f[1]] = theFace;
 		}
 	}
-	else if (color == 'b')
+	else if (color == orientChar[2])
 	{
-		if (CubeCube::cube[b].getCenter().getTypeChar() == '!')  // Once set colors shouldn't change
+		if (CubeCube::cube[_f[2]].getCenter().getTypeChar() == '!')  // Once set colors shouldn't change
 		{
-			CubeCube::cube[b] = theFace;
-		}
-
-	}
-	else if (color == 'w')
-	{
-		if (CubeCube::cube[w].getCenter().getTypeChar() == '!')  // Once set colors shouldn't change
-		{
-			CubeCube::cube[w] = theFace;
+			CubeCube::cube[_f[2]] = theFace;
 		}
 
 	}
-	else if (color == 'o')
+	else if (color == orientChar[3])
 	{
-		if (CubeCube::cube[o].getCenter().getTypeChar() == '!')  // Once set colors shouldn't change
+		if (CubeCube::cube[_f[3]].getCenter().getTypeChar() == '!')  // Once set colors shouldn't change
 		{
-			CubeCube::cube[o] = theFace;
+			CubeCube::cube[_f[3]] = theFace;
 		}
 
 	}
-	else if (color == 'y')
+	else if (color == orientChar[4])
 	{
-		if (CubeCube::cube[y].getCenter().getTypeChar() == '!')  // Once set colors shouldn't change
+		if (CubeCube::cube[_f[4]].getCenter().getTypeChar() == '!')  // Once set colors shouldn't change
 		{
-			CubeCube::cube[y] = theFace;
+			CubeCube::cube[_f[4]] = theFace;
+		}
+
+	}
+	else if (color == orientChar[5])
+	{
+		if (CubeCube::cube[_f[5]].getCenter().getTypeChar() == '!')  // Once set colors shouldn't change
+		{
+			CubeCube::cube[_f[5]] = theFace;
 		}
 	}
 
@@ -101,15 +150,15 @@ void CubeCube::setFace(CubeFace theFace)
 
 void CubeCube::displayCube()
 {
-	cout << "Bottom Face: " << bottomFace << " " << orient << endl;
+	cout << "Bottom Face: " << bottomFace << " " << orient << " " << orientChar << endl;
 	string hrz = " +---+---+---+";
 
 	cout << setw(28) << hrz << endl;
-	cout << setw(17) << " | " << cube[b].getColors(0).getType().at(0) << " | " << cube[b].getColors(1).getType().at(0) << " | " << cube[b].getColors(2).getType().at(0) << " | " << endl;
+	cout << setw(17) << " | " << cube[_f[5]].getColors(0).getType().at(0) << " | " << cube[_f[5]].getColors(1).getType().at(0) << " | " << cube[_f[5]].getColors(2).getType().at(0) << " | " << endl;
 	cout << setw(28) << hrz << endl;
-	cout << setw(17) << " | " << cube[b].getColors(3).getType().at(0) << " | " << cube[b].getColors(4).getType().at(0) << " | " << cube[b].getColors(5).getType().at(0) << " | " << endl;
+	cout << setw(17) << " | " << cube[_f[5]].getColors(3).getType().at(0) << " | " << cube[_f[5]].getColors(4).getType().at(0) << " | " << cube[_f[5]].getColors(5).getType().at(0) << " | " << endl;
 	cout << setw(28) << hrz << endl;
-	cout << setw(17) << " | " << cube[b].getColors(6).getType().at(0) << " | " << cube[b].getColors(7).getType().at(0) << " | " << cube[b].getColors(8).getType().at(0) << " | " << endl;
+	cout << setw(17) << " | " << cube[_f[5]].getColors(6).getType().at(0) << " | " << cube[_f[5]].getColors(7).getType().at(0) << " | " << cube[_f[5]].getColors(8).getType().at(0) << " | " << endl;
 	cout << setw(28) << hrz << endl;
 
 	for (int i = 0; i < 4; i++)
@@ -117,34 +166,34 @@ void CubeCube::displayCube()
 	cout << endl;
 
 	// display | o | w | r | y |
-	cout << " | " << cube[o].getColors(0).getType().at(0) << " | " << cube[o].getColors(1).getType().at(0) << " | " << cube[o].getColors(2).getType().at(0) << " |";
-	cout << " | " << cube[w].getColors(0).getType().at(0) << " | " << cube[w].getColors(1).getType().at(0) << " | " << cube[w].getColors(2).getType().at(0) << " |";
-	cout << " | " << cube[r].getColors(0).getType().at(0) << " | " << cube[r].getColors(1).getType().at(0) << " | " << cube[r].getColors(2).getType().at(0) << " |";
-	cout << " | " << cube[y].getColors(0).getType().at(0) << " | " << cube[y].getColors(1).getType().at(0) << " | " << cube[y].getColors(2).getType().at(0) << " |" << endl;
+	cout << " | " << cube[_f[1]].getColors(0).getType().at(0) << " | " << cube[_f[1]].getColors(1).getType().at(0) << " | " << cube[_f[1]].getColors(2).getType().at(0) << " |";
+	cout << " | " << cube[_f[2]].getColors(0).getType().at(0) << " | " << cube[_f[2]].getColors(1).getType().at(0) << " | " << cube[_f[2]].getColors(2).getType().at(0) << " |";
+	cout << " | " << cube[_f[3]].getColors(0).getType().at(0) << " | " << cube[_f[3]].getColors(1).getType().at(0) << " | " << cube[_f[3]].getColors(2).getType().at(0) << " |";
+	cout << " | " << cube[_f[4]].getColors(0).getType().at(0) << " | " << cube[_f[4]].getColors(1).getType().at(0) << " | " << cube[_f[4]].getColors(2).getType().at(0) << " |" << endl;
 	for (int i = 0; i < 4; i++)
 		cout << hrz;
 	cout << endl;
-	cout << " | " << cube[o].getColors(3).getType().at(0) << " | " << cube[o].getColors(4).getType().at(0) << " | " << cube[o].getColors(5).getType().at(0) << " |";
-	cout << " | " << cube[w].getColors(3).getType().at(0) << " | " << cube[w].getColors(4).getType().at(0) << " | " << cube[w].getColors(5).getType().at(0) << " |";
-	cout << " | " << cube[r].getColors(3).getType().at(0) << " | " << cube[r].getColors(4).getType().at(0) << " | " << cube[r].getColors(5).getType().at(0) << " |";
-	cout << " | " << cube[y].getColors(3).getType().at(0) << " | " << cube[y].getColors(4).getType().at(0) << " | " << cube[y].getColors(5).getType().at(0) << " |" << endl;
+	cout << " | " << cube[_f[1]].getColors(3).getType().at(0) << " | " << cube[_f[1]].getColors(4).getType().at(0) << " | " << cube[_f[1]].getColors(5).getType().at(0) << " |";
+	cout << " | " << cube[_f[2]].getColors(3).getType().at(0) << " | " << cube[_f[2]].getColors(4).getType().at(0) << " | " << cube[_f[2]].getColors(5).getType().at(0) << " |";
+	cout << " | " << cube[_f[3]].getColors(3).getType().at(0) << " | " << cube[_f[3]].getColors(4).getType().at(0) << " | " << cube[_f[3]].getColors(5).getType().at(0) << " |";
+	cout << " | " << cube[_f[4]].getColors(3).getType().at(0) << " | " << cube[_f[4]].getColors(4).getType().at(0) << " | " << cube[_f[4]].getColors(5).getType().at(0) << " |" << endl;
 	for (int i = 0; i < 4; i++)
 		cout << hrz;
 	cout << endl;
-	cout << " | " << cube[o].getColors(6).getType().at(0) << " | " << cube[o].getColors(7).getType().at(0) << " | " << cube[o].getColors(8).getType().at(0) << " |";
-	cout << " | " << cube[w].getColors(6).getType().at(0) << " | " << cube[w].getColors(7).getType().at(0) << " | " << cube[w].getColors(8).getType().at(0) << " |";
-	cout << " | " << cube[r].getColors(6).getType().at(0) << " | " << cube[r].getColors(7).getType().at(0) << " | " << cube[r].getColors(8).getType().at(0) << " |";
-	cout << " | " << cube[y].getColors(6).getType().at(0) << " | " << cube[y].getColors(7).getType().at(0) << " | " << cube[y].getColors(8).getType().at(0) << " |" << endl;
+	cout << " | " << cube[_f[1]].getColors(6).getType().at(0) << " | " << cube[_f[1]].getColors(7).getType().at(0) << " | " << cube[_f[1]].getColors(8).getType().at(0) << " |";
+	cout << " | " << cube[_f[2]].getColors(6).getType().at(0) << " | " << cube[_f[2]].getColors(7).getType().at(0) << " | " << cube[_f[2]].getColors(8).getType().at(0) << " |";
+	cout << " | " << cube[_f[3]].getColors(6).getType().at(0) << " | " << cube[_f[3]].getColors(7).getType().at(0) << " | " << cube[_f[3]].getColors(8).getType().at(0) << " |";
+	cout << " | " << cube[_f[4]].getColors(6).getType().at(0) << " | " << cube[_f[4]].getColors(7).getType().at(0) << " | " << cube[_f[4]].getColors(8).getType().at(0) << " |" << endl;
 	for (int i = 0; i < 4; i++)
 		cout << hrz;
 	cout << endl;
 
 	cout << setw(28) << hrz << endl;
-	cout << setw(17) << " | " << cube[g].getColors(0).getType().at(0) << " | " << cube[g].getColors(1).getType().at(0) << " | " << cube[g].getColors(2).getType().at(0) << " | " << endl;
+	cout << setw(17) << " | " << cube[_f[0]].getColors(0).getType().at(0) << " | " << cube[_f[0]].getColors(1).getType().at(0) << " | " << cube[_f[0]].getColors(2).getType().at(0) << " | " << endl;
 	cout << setw(28) << hrz << endl;
-	cout << setw(17) << " | " << cube[g].getColors(3).getType().at(0) << " | " << cube[g].getColors(4).getType().at(0) << " | " << cube[g].getColors(5).getType().at(0) << " | " << endl;
+	cout << setw(17) << " | " << cube[_f[0]].getColors(3).getType().at(0) << " | " << cube[_f[0]].getColors(4).getType().at(0) << " | " << cube[_f[0]].getColors(5).getType().at(0) << " | " << endl;
 	cout << setw(28) << hrz << endl;
-	cout << setw(17) << " | " << cube[g].getColors(6).getType().at(0) << " | " << cube[g].getColors(7).getType().at(0) << " | " << cube[g].getColors(8).getType().at(0) << " | " << endl;
+	cout << setw(17) << " | " << cube[_f[0]].getColors(6).getType().at(0) << " | " << cube[_f[0]].getColors(7).getType().at(0) << " | " << cube[_f[0]].getColors(8).getType().at(0) << " | " << endl;
 	cout << setw(28) << hrz << endl;
 
 	cout << endl;
