@@ -21,6 +21,8 @@
 #include "CubeFace.h"
 #include "CubeCube.h"
 
+string globalMessage = "";
+string globalSubMessage = "";
 
 //initial min and max HSV filter values.
 //these will be changed using trackbars
@@ -514,7 +516,10 @@ int main(int argc, char* argv[])
 
 	CubeColor color;
 	
-	clickFace();
+	string arrowUp = "^";
+	string lineUp  = "|";
+	string arrowRight = ">";
+	string lineRight = "-";
 
 	//some boolean variables for different functionality within this
 	//program
@@ -548,6 +553,10 @@ int main(int argc, char* argv[])
 	int faceCounter = 0;
 	CubeFace tempFace;
 	bool isFirstPass = true;
+	globalMessage = "Get Bottom Face";
+	
+	clickFace();
+
 	while (1) {
 		//store image to matrix
 		capture.read(cameraFeed);
@@ -628,16 +637,16 @@ int main(int argc, char* argv[])
 			morphOps(threshold);
 			trackFilteredObject(face, yellow, x, y, threshold, cameraShow);
 
-			//cube.displayClick();
-			//clickFace();
-			
-			//if (isFirstPass)
-			//{
-			//	tempFace = face;
-			//	isFirstPass = false;
-			//}
 
+/*			if (cube.getNumSetFaces() == 1)
+			{
+				globalMessage = "^";
+				globalSubMessage = "|";
+			}
 
+			putText(cameraShow, arrowTop, Point(0, 50), 2, 1, Scalar(0, 255, 0), 2);
+			putText(cameraShow, arrowBottom, Point(10, 75), 2, 1, Scalar(0, 255, 0), 2);
+			*/
 		}
 		
 

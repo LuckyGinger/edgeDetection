@@ -11,6 +11,16 @@ CubeCube::~CubeCube()
 {
 }
 
+int CubeCube::colortoi(char c)
+{
+	// subtract the the ascii value 0 from the characters 1 - 9
+	if (c - '0' > -1 && c - '0' < 10)
+		return c - '0';
+	else
+		return -1;
+}
+
+
 void CubeCube::setOrient(char c)
 {
 	// Read from orient file
@@ -31,49 +41,74 @@ void CubeCube::setOrient(char c)
 	}
 	infile.close();
 
-	// Because I have no idea how else to do this...
 	// Converts strings to int
 	// string "31245" to int of one number totalling 6 numbers
-	_f[0] = orient.c_str()[0] - '0';
-	_f[1] = orient.c_str()[1] - '0';
-	_f[2] = orient.c_str()[2] - '0';
-	_f[3] = orient.c_str()[3] - '0';
-	_f[4] = orient.c_str()[4] - '0';
-	_f[5] = orient.c_str()[5] - '0';
+	for (int i = 0; i < MAX_FACES; i++)
+		_f[i] = colortoi(orient.c_str()[i]);
 
 }
 
 void CubeCube::orientFaces()
 {
+	bool isEdges = false;
+	string line1;
+	string line2;
+	string line3;
 
-}
+	ifstream infile("pieces.txt");
 
-int colortoi(char c)
-{
-	switch (c)
+	while (getline(infile, line1))
 	{
-	case 'r':
-		return 0;
-	case 'g':
-		return 1;
-	case 'b':
-		return 2;
-	case 'w':
-		return 3;
-	case 'o':
-		return 4;
-	case 'y':
-		return 5;
-	}
+		cout << line1 << endl;
+		
+		if (!isEdges)  // is Corners
+		{
+			if (line1 == "*")
+				isEdges = true;
+			else
+			{
+				getline(infile, line2);
+				getline(infile, line3);
+				// compare peices
 
-	return -1; // bad color input
+
+
+			}
+
+		}
+		else  // is edges
+		{
+
+		}
+
+		cout << line2 << endl;
+		cout << line3 << endl;
+
+		//if (line[0] == c)
+		//{
+		//	temp = line;
+		//	CubeCube::orient = line.substr(2, 7); // set the orient string
+		//	CubeCube::orientChar = temp.substr(9, 15);
+		//	cout << orient << endl;
+		//	cout << orientChar << endl;
+		//}
+	}
+	infile.close();
+
+
 }
+
+int CubeCube::getNumSetFaces() 
+{
+	return CubeCube::currentNumFaces;
+}
+
 
 void CubeCube::setFace(CubeFace theFace)
 {
+	CubeCube::currentNumFaces++;
 
 	char color = (char)theFace.getCenter().getTypeChar();
-
 	// convert the color
 //	int c = colortoi(color)
 
@@ -93,7 +128,7 @@ void CubeCube::setFace(CubeFace theFace)
 	cout << _f[3] << endl;
 	cout << _f[4] << endl;
 	cout << _f[5] << endl;
-	if (color == orientChar[0])
+	if (color == orientChar[0])  // bottom color face
 	{
 		if (CubeCube::cube[_f[0]].getCenter().getTypeChar() == '!')  // Once set colors shouldn't change
 		{
@@ -101,41 +136,65 @@ void CubeCube::setFace(CubeFace theFace)
 		}
 
 	}
-	else if (color == orientChar[1])
+	else if (color == orientChar[1]) // left color face
 	{
 		if (CubeCube::cube[_f[1]].getCenter().getTypeChar() == '!')  // Once set colors shouldn't change
 		{
+			// rotate face counter clockwise (clockwise 3 times) // TODO: implement counter clockwise
+			if (currentNumFaces == 2)
+				CubeCube::cube[_f[0]].rotateClockwise(3);
+
 			CubeCube::cube[_f[1]] = theFace;
 		}
 	}
-	else if (color == orientChar[2])
+	else if (color == orientChar[2]) // middle color face
 	{
 		if (CubeCube::cube[_f[2]].getCenter().getTypeChar() == '!')  // Once set colors shouldn't change
 		{
+			// no need to rotate bottom face
+			// already has correct orientation
+
 			CubeCube::cube[_f[2]] = theFace;
 		}
 
 	}
-	else if (color == orientChar[3])
+	else if (color == orientChar[3]) // right color face
 	{
 		if (CubeCube::cube[_f[3]].getCenter().getTypeChar() == '!')  // Once set colors shouldn't change
 		{
+			// rotate face clockwise 1 time
+			if (currentNumFaces == 2)
+				CubeCube::cube[_f[0]].rotateClockwise(1);
+
 			CubeCube::cube[_f[3]] = theFace;
 		}
 
 	}
-	else if (color == orientChar[4])
+	else if (color == orientChar[4]) // back color face
 	{
 		if (CubeCube::cube[_f[4]].getCenter().getTypeChar() == '!')  // Once set colors shouldn't change
 		{
+			// rotate face clockwise 2 times
+			if (currentNumFaces == 2)
+				CubeCube::cube[_f[0]].rotateClockwise(2);
+			
 			CubeCube::cube[_f[4]] = theFace;
 		}
 
 	}
-	else if (color == orientChar[5])
+	else if (color == orientChar[5]) // top color face
 	{
 		if (CubeCube::cube[_f[5]].getCenter().getTypeChar() == '!')  // Once set colors shouldn't change
 		{
+			if (lastSetFace == orientChar[1])
+				theFace.rotateClockwise(1);
+			else if (lastSetFace == orientChar[2])
+				; // do nothing already has correct orientation
+			else if (lastSetFace == orientChar[3])
+				theFace.rotateClockwise(3);
+			else if (lastSetFace == orientChar[4])
+				theFace.rotateClockwise(2);
+
 			CubeCube::cube[_f[5]] = theFace;
 		}
 	}
@@ -143,8 +202,9 @@ void CubeCube::setFace(CubeFace theFace)
 	//throw new string("Error invalid color");
 
 	//}
+	lastSetFace = color;
 
-	orientFaces();
+	//orientFaces();
 }
 
 

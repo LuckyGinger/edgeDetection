@@ -13,18 +13,24 @@ public:
 
 	void setFace(CubeFace theFace);
 	void displayCube();
+	
+	int getNumSetFaces();  // TODO: implement this without counter
 
 private:
 	static const int MAX_FACES = 6;
 	CubeFace cube[MAX_FACES];
 
+	int currentNumFaces = 0;
+
 	char bottomFace; 
+	char lastSetFace;
 	string orient;
 	string orientChar;
-
+	
 	int _f[MAX_FACES] = { 0,0,0,0,0,0 };
 
 	int colortoi(char c);
+
 
 	void orientFaces();
 	void setOrient(char color);  // take the bottom color
