@@ -508,6 +508,72 @@ void clickFace()
 
 }
 
+void drawArrow(Mat image, string direction)
+{
+	int centerY = image.rows / 2;
+	int centerX = image.cols / 2;
+
+
+	if (direction == "right")
+	{
+
+	}
+	else if (direction == "up")
+	{
+
+
+		for (int y = 0; y < image.rows; y++) // y = rows
+		{
+
+			for (int x = 0; x < image.cols; x++) // x = cols
+			{
+
+				Vec3b bgrPixel = image.at<Vec3b>(y, x);
+
+				// Right side of Up arrow
+				//if (x <= y + centerX && x >= centerX && y <= 50)
+				//{
+				//	bgrPixel[0] = 0;
+				//	bgrPixel[1] = 255;
+				//	bgrPixel[2] = 0;
+
+				//	image.at<Vec3b>(y, x) = bgrPixel;
+				//}
+
+				if (x <= y + image.cols)
+				{
+					bgrPixel[0] = 0;
+					bgrPixel[1] = 255;
+					bgrPixel[2] = 0;
+
+					image.at<Vec3b>(y, x) = bgrPixel;
+				}
+
+				//// White Border lines
+				//if ((x == centerX - 151 || x == centerX - 150 || x == centerX - 149 ||
+				//	x == centerX + 151 || x == centerX + 150 || x == centerX + 149 ||
+				//	y == centerY - 151 || y == centerY - 150 || y == centerY - 149 ||
+				//	y == centerY + 151 || y == centerY + 150 || y == centerY + 149) &&
+				//	x >= centerX - 151 && x <= centerX + 151 &&
+				//	y >= centerY - 151 && y <= centerY + 151)
+				//{
+				//	bgrPixel[0] = 255;
+				//	bgrPixel[1] = 255;
+				//	bgrPixel[2] = 255;
+
+				//	image.at<Vec3b>(y, x) = bgrPixel;
+				//}
+
+			}
+
+		}
+
+
+
+	}
+	else
+		return;
+}
 
 int main(int argc, char* argv[])
 {
@@ -526,6 +592,7 @@ int main(int argc, char* argv[])
 	bool trackObjects = true;
 	bool useMorphOps = true;
 	bool calibrationMode = false;
+	bool loadCube = false;
 	//Matrix to store each frame of the webcam feed
 	Mat cameraFeed;
 	Mat cameraShow;
@@ -534,8 +601,10 @@ int main(int argc, char* argv[])
 	//matrix storage for binary threshold image
 	Mat threshold;
 	Mat threshold2;
+
 	//create slider bars for HSV filtering
-	createTrackbars();
+	if (calibrationMode)
+		createTrackbars();
 
 	//x and y values for the location of the object
 	int x = 0, y = 0;
@@ -555,122 +624,146 @@ int main(int argc, char* argv[])
 	bool isFirstPass = true;
 	globalMessage = "Get Bottom Face";
 	
-	clickFace();
+	if (!loadCube)
+		clickFace();
 
-	while (1) {
-		//store image to matrix
-		capture.read(cameraFeed);
-		capture.read(cameraShow);
-		drawLines(cameraShow);
-		//convert frame from BGR to HSV colorspace
-		cvtColor(cameraFeed, HSV, COLOR_BGR2HSV);
-
-		if (calibrationMode == true)
-		{
-
-			color.setHSVmin(Scalar(H_MIN, S_MIN, V_MIN));
-			color.setHSVmax(Scalar(H_MAX, S_MAX, V_MAX));
-			
-			//filter HSV image between values and store filtered image to
-			//threshold matrix
-			inRange(HSV, color.getHSVmin(), color.getHSVmax(), threshold);
-			//inRange(cameraFeed, Scalar(180 + H_MIN, S_MIN, V_MIN), Scalar( 180 + H_MAX, S_MAX, V_MAX), threshold2);
-			//threshold = threshold | threshold2;
-
-
-			// Perform morphological operations on thresholded image to eliminate noise
-			//  and emphasize the filtered object(s)morphOps(threshold);
-			morphOps(threshold);
-			// Display threshold
-			imshow(windowName2, threshold);
-			// This function will return the x and y coordinates of the
-			//  filtered object
-			trackFilteredObject(color, x, y, threshold, cameraShow);
-			//trackFilteredObject(color, x, y, threshold, cameraFeed);
-		}
-		else {
-			CubeColor red("red", loc), green("green", loc), blue("blue", loc);
-			CubeColor white("white", loc), orange("orange", loc), yellow("yellow", loc);
-
-			//CubeColor green("green");
-			//CubeColor yellow("yellow");
-
-			//red.setHSVmin(Scalar(0, 224, 151));
-			//red.setHSVmax(Scalar(25, 256, 234));
-
-			// RED COLOR
+	if (!loadCube)
+	{
+		while (1) {
+			//store image to matrix
+			capture.read(cameraFeed);
+			capture.read(cameraShow);
+			drawLines(cameraShow);
+			//convert frame from BGR to HSV colorspace
 			cvtColor(cameraFeed, HSV, COLOR_BGR2HSV);
-			inRange(HSV, red.getHSVmin(), red.getHSVmax(), threshold);
-			morphOps(threshold);
-			//imshow(windowName2, threshold);
-			trackFilteredObject(face, red, x, y, threshold, cameraShow);
 
-
-			// GREEN COLOR
-			cvtColor(cameraFeed, HSV, COLOR_BGR2HSV);
-			inRange(HSV, green.getHSVmin(), green.getHSVmax(), threshold);
-			morphOps(threshold);
-			trackFilteredObject(face, green, x, y, threshold, cameraShow);
-
-			// BLUE COLOR
-			cvtColor(cameraFeed, HSV, COLOR_BGR2HSV);
-			inRange(HSV, blue.getHSVmin(), blue.getHSVmax(), threshold);
-			morphOps(threshold);
-			trackFilteredObject(face, blue, x, y, threshold, cameraShow);
-
-			// WHITE COLOR
-			cvtColor(cameraFeed, HSV, COLOR_BGR2HSV);
-			inRange(HSV, white.getHSVmin(), white.getHSVmax(), threshold);
-			morphOps(threshold);
-			trackFilteredObject(face, white, x, y, threshold, cameraShow);
-
-			// ORANGE COLOR
-			cvtColor(cameraFeed, HSV, COLOR_BGR2HSV);
-			inRange(HSV, orange.getHSVmin(), orange.getHSVmax(), threshold);
-			morphOps(threshold);
-			trackFilteredObject(face, orange, x, y, threshold, cameraShow);
-			
-
-			// YELLOW COLOR
-			cvtColor(cameraFeed, HSV, COLOR_BGR2HSV);
-			inRange(HSV, yellow.getHSVmin(), yellow.getHSVmax(), threshold);
-			morphOps(threshold);
-			trackFilteredObject(face, yellow, x, y, threshold, cameraShow);
-
-
-/*			if (cube.getNumSetFaces() == 1)
+			if (calibrationMode == true)
 			{
-				globalMessage = "^";
-				globalSubMessage = "|";
+
+				color.setHSVmin(Scalar(H_MIN, S_MIN, V_MIN));
+				color.setHSVmax(Scalar(H_MAX, S_MAX, V_MAX));
+
+				//filter HSV image between values and store filtered image to
+				//threshold matrix
+				inRange(HSV, color.getHSVmin(), color.getHSVmax(), threshold);
+				//inRange(cameraFeed, Scalar(180 + H_MIN, S_MIN, V_MIN), Scalar( 180 + H_MAX, S_MAX, V_MAX), threshold2);
+				//threshold = threshold | threshold2;
+
+
+				// Perform morphological operations on thresholded image to eliminate noise
+				//  and emphasize the filtered object(s)morphOps(threshold);
+				morphOps(threshold);
+				// Display threshold
+				imshow(windowName2, threshold);
+				// This function will return the x and y coordinates of the
+				//  filtered object
+				trackFilteredObject(color, x, y, threshold, cameraShow);
+				//trackFilteredObject(color, x, y, threshold, cameraFeed);
+			}
+			else {
+				CubeColor red("red", loc), green("green", loc), blue("blue", loc);
+				CubeColor white("white", loc), orange("orange", loc), yellow("yellow", loc);
+
+				//CubeColor green("green");
+				//CubeColor yellow("yellow");
+
+				//red.setHSVmin(Scalar(0, 224, 151));
+				//red.setHSVmax(Scalar(25, 256, 234));
+
+				// RED COLOR
+				cvtColor(cameraFeed, HSV, COLOR_BGR2HSV);
+				inRange(HSV, red.getHSVmin(), red.getHSVmax(), threshold);
+				morphOps(threshold);
+				//imshow(windowName2, threshold);
+				trackFilteredObject(face, red, x, y, threshold, cameraShow);
+
+
+				// GREEN COLOR
+				cvtColor(cameraFeed, HSV, COLOR_BGR2HSV);
+				inRange(HSV, green.getHSVmin(), green.getHSVmax(), threshold);
+				morphOps(threshold);
+				trackFilteredObject(face, green, x, y, threshold, cameraShow);
+
+				// BLUE COLOR
+				cvtColor(cameraFeed, HSV, COLOR_BGR2HSV);
+				inRange(HSV, blue.getHSVmin(), blue.getHSVmax(), threshold);
+				morphOps(threshold);
+				trackFilteredObject(face, blue, x, y, threshold, cameraShow);
+
+				// WHITE COLOR
+				cvtColor(cameraFeed, HSV, COLOR_BGR2HSV);
+				inRange(HSV, white.getHSVmin(), white.getHSVmax(), threshold);
+				morphOps(threshold);
+				trackFilteredObject(face, white, x, y, threshold, cameraShow);
+
+				// ORANGE COLOR
+				cvtColor(cameraFeed, HSV, COLOR_BGR2HSV);
+				inRange(HSV, orange.getHSVmin(), orange.getHSVmax(), threshold);
+				morphOps(threshold);
+				trackFilteredObject(face, orange, x, y, threshold, cameraShow);
+
+
+				// YELLOW COLOR
+				cvtColor(cameraFeed, HSV, COLOR_BGR2HSV);
+				inRange(HSV, yellow.getHSVmin(), yellow.getHSVmax(), threshold);
+				morphOps(threshold);
+				trackFilteredObject(face, yellow, x, y, threshold, cameraShow);
+
+				//if (cube.getNumSetFaces() == 0)
+				//	drawArrow(cameraShow, "up");
+				//if (cube.getNumSetFaces() == 1)
+				//{
+				//	globalMessage = "Up";
+				//	putText(cameraShow, globalMessage, Point(0, 50), 2, 1, Scalar(0, 255, 0), 2);
+				//	putText(cameraShow, arrowUp, Point(30, 100), 2, 1, Scalar(0, 255, 0), 2);
+				//	putText(cameraShow, lineUp, Point(35, 120), 2, 1, Scalar(0, 255, 0), 2);
+				//}
 			}
 
-			putText(cameraShow, arrowTop, Point(0, 50), 2, 1, Scalar(0, 255, 0), 2);
-			putText(cameraShow, arrowBottom, Point(10, 75), 2, 1, Scalar(0, 255, 0), 2);
-			*/
+
+			if (cube.isComplete())
+			{
+				break;
+			}
+
+			//show frames 
+			//imshow(windowName2, threshold);
+			imshow(windowName, cameraFeed);
+			imshow("Main Display", cameraShow);
+			imshow(windowName1, HSV);
+
+
+			//delay 30ms so that screen can refresh.
+			//image will not appear without this waitKey() command
+			if (cvWaitKey(30) != -1) {
+				break;
+			}
+			//face.displayFace();
+			cube.displayCube();
 		}
-		
+		cube.saveCube();
+
+		destroyAllWindows();
+	}
+	else
+	{
+		// No need for OpenCV opening saved cube
+		cube.loadCube();
+	}
+
+	cube.displayCube();
+
+	while (true)
+	{
 
 
-		//show frames 
-		//imshow(windowName2, threshold);
-		imshow(windowName, cameraFeed);
-		imshow("Main Display", cameraShow);
-		imshow(windowName1, HSV);
-
-
-		//delay 30ms so that screen can refresh.
-		//image will not appear without this waitKey() command
-		if (cvWaitKey(30)!=-1) {
+		if (cvWaitKey(100) != -1) {
 			break;
 		}
-		//face.displayFace();
-		cube.displayCube();
 	}
 
 
 
-
-	destroyAllWindows();
 
 	return 0;
 }

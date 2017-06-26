@@ -103,6 +103,74 @@ int CubeCube::getNumSetFaces()
 	return CubeCube::currentNumFaces;
 }
 
+int CubeCube::getMaxFaces()
+{
+	return CubeCube::MAX_FACES;
+}
+
+bool CubeCube::isComplete()
+{
+	return MAX_FACES == currentNumFaces;
+}
+
+void CubeCube::saveCube()
+{
+	ofstream outSaveCube(CubeCube::saveFileName);
+	
+	for (int i = 0; i < MAX_FACES; i++)
+	{
+		for (int j = 0; j < cube[_f[i]].getMaxColors(); j++)
+		{
+			if (j == cube[_f[i]].getMaxColors() - 1)
+				outSaveCube << cube[_f[i]].getColors(j).getType();
+			else
+				outSaveCube << cube[_f[i]].getColors(j).getType() << ",";
+		}
+		outSaveCube << endl;
+	}
+	outSaveCube.close();
+	return;
+}
+
+void CubeCube::loadCube()
+{
+	CubeCube::isLoading = true;
+	vector<vector<string>> cubeData;
+	string line;
+	string color;
+
+	// read the cube save file
+	ifstream inloadCube(CubeCube::saveFileName);
+	while (getline(inloadCube, line))
+	{
+		stringstream ssLine(line);
+		vector<string> lineData;
+		while (getline(ssLine, color, ','))
+		{
+			lineData.push_back(color);
+		}
+
+		cubeData.push_back(lineData);
+	}
+	inloadCube.close();
+
+	// Create the cube
+	for (int i = 0; i < cubeData.size(); i++)
+	{
+		CubeFace theFace;
+		vector<CubeColor> faceColor;
+		for (int j = 0; j < cubeData[i].size(); j++)
+		{
+			// Set each face Color
+			CubeColor color(cubeData[i][j], 1);
+			faceColor.push_back(color);
+		}
+		// Push each face color to the Face
+		theFace.setColors(faceColor);
+		// Push each face to the Cube
+		CubeCube::setFace(theFace);
+	}
+}
 
 void CubeCube::setFace(CubeFace theFace)
 {
@@ -120,14 +188,14 @@ void CubeCube::setFace(CubeFace theFace)
 
 
 	// get the center color for the face
-	cout << orientChar[0] << endl;
-	cout << color << endl;
-	cout << _f[0] << endl;
-	cout << _f[1] << endl;
-	cout << _f[2] << endl;
-	cout << _f[3] << endl;
-	cout << _f[4] << endl;
-	cout << _f[5] << endl;
+	//cout << orientChar[0] << endl;
+	//cout << color << endl;
+	//cout << _f[0] << endl;
+	//cout << _f[1] << endl;
+	//cout << _f[2] << endl;
+	//cout << _f[3] << endl;
+	//cout << _f[4] << endl;
+	//cout << _f[5] << endl;
 	if (color == orientChar[0])  // bottom color face
 	{
 		if (CubeCube::cube[_f[0]].getCenter().getTypeChar() == '!')  // Once set colors shouldn't change
@@ -141,7 +209,7 @@ void CubeCube::setFace(CubeFace theFace)
 		if (CubeCube::cube[_f[1]].getCenter().getTypeChar() == '!')  // Once set colors shouldn't change
 		{
 			// rotate face counter clockwise (clockwise 3 times) // TODO: implement counter clockwise
-			if (currentNumFaces == 2)
+			if (currentNumFaces == 2 && !isLoading)
 				CubeCube::cube[_f[0]].rotateClockwise(3);
 
 			CubeCube::cube[_f[1]] = theFace;
@@ -163,7 +231,7 @@ void CubeCube::setFace(CubeFace theFace)
 		if (CubeCube::cube[_f[3]].getCenter().getTypeChar() == '!')  // Once set colors shouldn't change
 		{
 			// rotate face clockwise 1 time
-			if (currentNumFaces == 2)
+			if (currentNumFaces == 2 && !isLoading)
 				CubeCube::cube[_f[0]].rotateClockwise(1);
 
 			CubeCube::cube[_f[3]] = theFace;
@@ -175,7 +243,7 @@ void CubeCube::setFace(CubeFace theFace)
 		if (CubeCube::cube[_f[4]].getCenter().getTypeChar() == '!')  // Once set colors shouldn't change
 		{
 			// rotate face clockwise 2 times
-			if (currentNumFaces == 2)
+			if (currentNumFaces == 2 && !isLoading)
 				CubeCube::cube[_f[0]].rotateClockwise(2);
 			
 			CubeCube::cube[_f[4]] = theFace;
@@ -186,13 +254,13 @@ void CubeCube::setFace(CubeFace theFace)
 	{
 		if (CubeCube::cube[_f[5]].getCenter().getTypeChar() == '!')  // Once set colors shouldn't change
 		{
-			if (lastSetFace == orientChar[1])
+			if (lastSetFace == orientChar[1] && !isLoading)
 				theFace.rotateClockwise(1);
-			else if (lastSetFace == orientChar[2])
+			else if (lastSetFace == orientChar[2] && !isLoading)
 				; // do nothing already has correct orientation
-			else if (lastSetFace == orientChar[3])
+			else if (lastSetFace == orientChar[3] && !isLoading)
 				theFace.rotateClockwise(3);
-			else if (lastSetFace == orientChar[4])
+			else if (lastSetFace == orientChar[4] && !isLoading)
 				theFace.rotateClockwise(2);
 
 			CubeCube::cube[_f[5]] = theFace;

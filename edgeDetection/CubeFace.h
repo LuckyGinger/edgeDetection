@@ -9,6 +9,7 @@ public:
 	~CubeFace();
 
 	void setColors(vector<CubeColor> color, Mat image);
+	void setColors(vector<CubeColor> color);
 
 	CubeColor getColors(int loc);
 	CubeColor getCenter();
@@ -16,6 +17,8 @@ public:
 	void rotateClockwise(int num);
 
 	void displayFace();
+
+	int getMaxColors();
 
 private:
 	string color;

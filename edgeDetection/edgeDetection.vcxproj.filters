@@ -42,5 +42,6 @@
   <ItemGroup>
     <Text Include="colordata.txt" />
     <Text Include="pieces.txt" />
+    <Text Include="cubeSave.txt" />
   </ItemGroup>
 </Project>
