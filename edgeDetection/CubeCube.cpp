@@ -13,7 +13,7 @@ CubeCube::~CubeCube()
 
 int CubeCube::colortoi(char c)
 {
-	// subtract the the ascii value 0 from the characters 1 - 9
+	// subtract the the ascii value 0 from the characters 0 - 9
 	if (c - '0' > -1 && c - '0' < 10)
 		return c - '0';
 	else
@@ -111,6 +111,77 @@ int CubeCube::getMaxFaces()
 bool CubeCube::isComplete()
 {
 	return MAX_FACES == currentNumFaces;
+}
+
+void CubeCube::rotateClockwiseFace(char f)
+{
+	deque<CubeColor> colors;
+//	vector<CubeColor> colors;
+	CubeFace tempFace;
+
+	if (f == orientChar[0])  // bottom face
+	{
+		tempFace = cube[_f[1]];
+		for (int i = 6; i < tempFace.getMaxColors(); i++)
+		{
+			colors.push_back(cube[_f[1]].getColors(i));
+			colors.push_back(cube[_f[2]].getColors(i));
+			colors.push_back(cube[_f[3]].getColors(i));
+			colors.push_back(cube[_f[4]].getColors(i));
+			
+			cube[_f[2]].setColor(colors.front(), i);
+			colors.pop_front();
+			cube[_f[3]].setColor(colors.front(), i);
+			colors.pop_front();
+			cube[_f[4]].setColor(colors.front(), i);
+			colors.pop_front();
+			cube[_f[1]].setColor(colors.front(), i);
+			colors.pop_front();
+		}
+		cube[_f[0]].rotateClockwise(1);
+
+		solution += "B,";
+	}
+	else if (f == orientChar[1]) // left face
+	{
+
+		cube[_f[1]].rotateClockwise(1);
+	}
+	else if (f == orientChar[2]) // middle face
+	{
+
+		cube[_f[2]].rotateClockwise(1);
+	}
+	else if (f == orientChar[3]) // right face
+	{
+
+		cube[_f[3]].rotateClockwise(1);
+	}
+	else if (f == orientChar[4]) // back face
+	{
+
+		cube[_f[4]].rotateClockwise(1);
+	}
+	else if (f == orientChar[5]) // top face
+	{
+
+		cube[_f[5]].rotateClockwise(1);
+	}
+}
+
+string CubeCube::getSolution()
+{
+	return CubeCube::solution;
+}
+
+void CubeCube::solveCube()
+{
+	rotateClockwiseFace('g');
+	rotateClockwiseFace('g');
+
+	cout << getSolution() << endl;
+
+	// TODO: Solve the cube
 }
 
 void CubeCube::saveCube()

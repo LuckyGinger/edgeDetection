@@ -592,7 +592,7 @@ int main(int argc, char* argv[])
 	bool trackObjects = true;
 	bool useMorphOps = true;
 	bool calibrationMode = false;
-	bool loadCube = false;
+	bool loadCube = true;
 	//Matrix to store each frame of the webcam feed
 	Mat cameraFeed;
 	Mat cameraShow;
@@ -750,6 +750,8 @@ int main(int argc, char* argv[])
 		// No need for OpenCV opening saved cube
 		cube.loadCube();
 	}
+
+	cube.solveCube();
 
 	cube.displayCube();
 

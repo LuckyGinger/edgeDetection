@@ -10,6 +10,8 @@ public:
 
 	void setColors(vector<CubeColor> color, Mat image);
 	void setColors(vector<CubeColor> color);
+	void setColors(CubeFace theFace);
+	void setColor(CubeColor c, int loc);
 
 	CubeColor getColors(int loc);
 	CubeColor getCenter();
@@ -19,6 +21,8 @@ public:
 	void displayFace();
 
 	int getMaxColors();
+
+	//CubeFace& operator= (const CubeFace& rhs);
 
 private:
 	string color;

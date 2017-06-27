@@ -78,6 +78,16 @@ CubeColor CubeFace::getCenter()
 	return CubeFace::getColors(4);
 }
 
+void CubeFace::setColor(CubeColor c, int loc)
+{
+	CubeFace::face[loc] = c;
+}
+
+void CubeFace::setColors(CubeFace theFace)
+{
+
+}
+
 void CubeFace::setColors(vector<CubeColor> colors)
 {
 	for (int i = 0; i < colors.size(); i++)
