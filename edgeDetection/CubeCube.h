@@ -40,6 +40,7 @@ private:
 	bool isLoading = false;
 
 	int totalMoves = 0;
+	int totalSeq = 0;
 	string solution = "";
 
 	// Actuall location of face on cube array in int
@@ -65,6 +66,7 @@ private:
 
 	CubeFace getRight(int i);
 	CubeFace getLeft(int i);
+	CubeFace getOpposite(int i);
 
 	CubeColor getAdjacentEdge(int current, int edge);
 

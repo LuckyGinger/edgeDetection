@@ -86,6 +86,7 @@ void CubeFace::rotateClockwise(int num)
 	return;
 }
 
+// Mostly used for top and bottom faces
 CubeColor CubeFace::getEdge(int loc, bool isTop)
 {
 	if (loc == 1)
@@ -115,12 +116,54 @@ CubeColor CubeFace::getEdge(int loc, bool isTop)
 	else if (loc >= 5)
 	{
 		// if loc too large just sub 4 from loc and getEdge again
-		return CubeFace::getEdge(loc - 4);
+		return CubeFace::getEdge(loc - 4, isTop);
 	}
 	else if (loc <= 0)
 	{
 		// if loc too small just add 4 from loc and getEdge again
-		return CubeFace::getEdge(loc + 4);
+		return CubeFace::getEdge(loc + 4, isTop);
+	}
+	else
+	{
+		; // We shouldn't ever get here
+	}
+}
+
+CubeColor CubeFace::getOppositeEdge(int loc, bool isTop)
+{
+	if (loc == 1)
+	{
+		return CubeFace::face[5];
+	}
+	else if (loc == 2 && isTop)
+	{
+		return CubeFace::face[1];
+	}
+	else if (loc == 2 && !isTop)
+	{
+		return CubeFace::face[7];
+	}
+	else if (loc == 3)
+	{
+		return CubeFace::face[3];
+	}
+	else if (loc == 4 && isTop)
+	{
+		return CubeFace::face[7];
+	}
+	else if (loc == 4 && !isTop)
+	{
+		return CubeFace::face[1];
+	}
+	else if (loc >= 5)
+	{
+		// if loc too large just sub 4 from loc and getEdge again
+		return CubeFace::getOppositeEdge(loc - 4, isTop);
+	}
+	else if (loc <= 0)
+	{
+		// if loc too small just add 4 from loc and getEdge again
+		return CubeFace::getOppositeEdge(loc + 4, isTop);
 	}
 	else
 	{

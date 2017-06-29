@@ -571,6 +571,33 @@ CubeFace CubeCube::getLeft(int i)
 
 }
 
+CubeFace CubeCube::getOpposite(int i)
+{
+	// get the next right face on the 
+	if (i >= 1 && i <= 4)
+	{
+		if (i > 2)
+		{
+			return CubeCube::cube[_f[i - 2]];
+		}
+		else
+		{
+			return CubeCube::cube[_f[i + 2]];
+		}
+	}
+	else if (i > 4)
+	{
+		return CubeCube::getRight(i - 4);
+	}
+	else if (i < 1)
+	{
+		return CubeCube::getRight(i + 4);
+	}
+	else
+	{
+		; // Shouldn't get here
+	}
+}
 //CubeColor CubeCube::getAdjacentEdge(int current, int edge)
 //{
 //	//for (int i = 0; i < 4; i++)
@@ -646,7 +673,122 @@ void CubeCube::solveStage1()
 			rotateClockwiseFace(orientChar.at(i));
 			rotateClockwiseFace(orientChar.at(i));
 		}
-		// Next
+		// The four cases where it's totally on the wrong face but in the "right" orientation
+		else if (getOpposite(i).getColors(1).getTypeChar() == orientChar.at(i) &&
+			cube[_f[5]].getOppositeEdge(i, true).getTypeChar() == orientChar.at(0))
+		{
+			rotateClockwiseFace(orientChar.at(5));
+			rotateClockwiseFace(orientChar.at(5));
+			rotateClockwiseFace(orientChar.at(i));
+			rotateClockwiseFace(orientChar.at(i));
+		}
+		else if (getOpposite(i).getColors(5).getTypeChar() == orientChar.at(i) &&
+			getLeft(i).getColors(3).getTypeChar() == orientChar.at(0))
+		{
+			rotateCounterClockwiseFace(getOpposite(i).getCenter().getTypeChar());
+			rotateClockwiseFace(orientChar.at(5));
+			rotateClockwiseFace(getOpposite(i).getCenter().getTypeChar());
+			rotateClockwiseFace(orientChar.at(5));
+			rotateClockwiseFace(orientChar.at(i));
+			rotateClockwiseFace(orientChar.at(i));
+		
+		}
+		else if (getOpposite(i).getColors(3).getTypeChar() == orientChar.at(i) &&
+			getRight(i).getColors(5).getTypeChar() == orientChar.at(0))
+		{
+			rotateClockwiseFace(getOpposite(i).getCenter().getTypeChar());
+			rotateClockwiseFace(orientChar.at(5));
+			rotateCounterClockwiseFace(getOpposite(i).getCenter().getTypeChar());
+			rotateClockwiseFace(orientChar.at(5));
+			rotateClockwiseFace(orientChar.at(i));
+			rotateClockwiseFace(orientChar.at(i));
+		}
+		else if (getOpposite(i).getColors(7).getTypeChar() == orientChar.at(i) &&
+			cube[_f[0]].getOppositeEdge(i).getTypeChar() == orientChar.at(0))
+		{
+			rotateClockwiseFace(getOpposite(i).getCenter().getTypeChar());
+			rotateClockwiseFace(getOpposite(i).getCenter().getTypeChar());
+			rotateClockwiseFace(orientChar.at(5));
+			rotateClockwiseFace(orientChar.at(5));
+			rotateClockwiseFace(orientChar.at(i));
+			rotateClockwiseFace(orientChar.at(i));
+		}
+		// The four cases where it's on the wrong face and in the wrong orientation
+		else if (getOpposite(i).getColors(1).getTypeChar() == orientChar.at(0) &&
+			cube[_f[5]].getOppositeEdge(i, true).getTypeChar() == orientChar.at(i))
+		{
+			rotateClockwiseFace(orientChar.at(5));
+			rotateCounterClockwiseFace(getRight(i).getCenter().getTypeChar());
+			rotateClockwiseFace(orientChar.at(i));
+			rotateClockwiseFace(getRight(i).getCenter().getTypeChar());
+		}
+		else if (getOpposite(i).getColors(5).getTypeChar() == orientChar.at(0) &&
+			getLeft(i).getColors(3).getTypeChar() == orientChar.at(i))
+		{
+			rotateClockwiseFace(getLeft(i).getCenter().getTypeChar());
+			rotateCounterClockwiseFace(orientChar.at(5));
+			rotateCounterClockwiseFace(getLeft(i).getCenter().getTypeChar());
+			rotateClockwiseFace(orientChar.at(i));
+			rotateClockwiseFace(orientChar.at(i));
+		}
+		else if (getOpposite(i).getColors(3).getTypeChar() == orientChar.at(0) &&
+			getRight(i).getColors(5).getTypeChar() == orientChar.at(i))
+		{
+			rotateCounterClockwiseFace(getRight(i).getCenter().getTypeChar());
+			rotateClockwiseFace(orientChar.at(5));
+			rotateClockwiseFace(getRight(i).getCenter().getTypeChar());
+			rotateClockwiseFace(orientChar.at(i));
+			rotateClockwiseFace(orientChar.at(i));
+		}
+		else if (getOpposite(i).getColors(7).getTypeChar() == orientChar.at(0) &&
+			cube[_f[0]].getOppositeEdge(i).getTypeChar() == orientChar.at(i))
+		{
+			rotateClockwiseFace(getOpposite(i).getCenter().getTypeChar());
+			rotateCounterClockwiseFace(getRight(i).getCenter().getTypeChar());
+			rotateClockwiseFace(orientChar.at(5));
+			rotateClockwiseFace(getRight(i).getCenter().getTypeChar());
+			rotateClockwiseFace(orientChar.at(i));
+			rotateClockwiseFace(orientChar.at(i));
+
+		}
+		// The four cases where the edge pieces are in the "middle" colom and have the "right" orientation
+		else if (getRight(i).getColors(1).getTypeChar() == orientChar.at(i) &&
+			cube[_f[5]].getEdge(i + 1, true).getTypeChar() == orientChar.at(0))
+		{
+			rotateClockwiseFace(orientChar.at(5));
+			rotateClockwiseFace(orientChar.at(i));
+			rotateClockwiseFace(orientChar.at(i));
+		}
+		else if (getLeft(i).getColors(1).getTypeChar() == orientChar.at(i) &&
+			cube[_f[5]].getEdge(i - 1, true).getTypeChar() == orientChar.at(0))
+		{
+			rotateCounterClockwiseFace(orientChar.at(5));
+			rotateClockwiseFace(orientChar.at(i));
+			rotateClockwiseFace(orientChar.at(i));
+		}
+		else if (getRight(i).getColors(7).getTypeChar() == orientChar.at(i) &&
+			cube[_f[0]].getEdge(i + 1).getTypeChar() == orientChar.at(0))
+		{
+			rotateClockwiseFace(getRight(i).getCenter().getTypeChar());
+			rotateClockwiseFace(getRight(i).getCenter().getTypeChar());
+			rotateClockwiseFace(orientChar.at(5));
+			rotateClockwiseFace(orientChar.at(i));
+			rotateClockwiseFace(orientChar.at(i));
+		}
+		else if (getLeft(i).getColors(7).getTypeChar() == orientChar.at(i) &&
+			cube[_f[0]].getEdge(i - 1).getTypeChar() == orientChar.at(0))
+		{
+			rotateCounterClockwiseFace(getLeft(i).getCenter().getTypeChar());
+			rotateCounterClockwiseFace(getLeft(i).getCenter().getTypeChar());
+			rotateCounterClockwiseFace(orientChar.at(5));
+			rotateClockwiseFace(orientChar.at(i));
+			rotateClockwiseFace(orientChar.at(i));
+		}
+		// The four cases where the edge pieces are in the "middle" colom and have the wrong orientation
+
+
+		solution += " | ";
+		CubeCube::totalSeq += 1;
 	}
 }
 
@@ -654,6 +796,7 @@ void CubeCube::solveCube()
 {
 	solveStage1();
 	cout << "Total Moves = " << CubeCube::totalMoves << endl;
+	cout << "Total Sequences = " << CubeCube::totalSeq << endl;
 	cout << getSolution() << endl;
 }
 
