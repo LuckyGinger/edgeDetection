@@ -17,6 +17,42 @@ int CubeFace::getMaxColors()
 	return MAX_COLORS;
 }
 
+void CubeFace::rotate180()
+{
+	rotateClockwise(2);
+}
+
+void CubeFace::rotateCounterClockwise(int num)
+{
+	CubeColor temp[MAX_COLORS];
+
+	for (int i = 0; i < num; i++)
+	{
+		// Top Left Color
+		temp[6] = face[0];
+		// Top Middle Color
+		temp[3] = face[1];
+		// Top Right Color
+		temp[0] = face[2];
+		// Center Left Color
+		temp[7] = face[3];
+		// Center Middle Color (stays the same)
+		temp[4] = face[4];
+		// Center Right Color
+		temp[1] = face[5];
+		// Bottom Left Color
+		temp[8] = face[6];
+		// Bottom Middle Color
+		temp[5] = face[7];
+		// Bottom Right Color
+		temp[2] = face[8];
+		for (int i = 0; i < MAX_COLORS; i++)
+		{
+			face[i] = temp[i];
+		}
+	}
+}
+
 void CubeFace::rotateClockwise(int num)
 {
 	CubeColor temp[MAX_COLORS];
@@ -50,25 +86,84 @@ void CubeFace::rotateClockwise(int num)
 	return;
 }
 
+CubeColor CubeFace::getEdge(int loc, bool isTop)
+{
+	if (loc == 1)
+	{
+		return CubeFace::face[3];
+	}
+	else if (loc == 2 && isTop)
+	{
+		return CubeFace::face[7];
+	}
+	else if (loc == 2 && !isTop)
+	{
+		return CubeFace::face[1];
+	}
+	else if (loc == 3)
+	{
+		return CubeFace::face[5];
+	}
+	else if (loc == 4 && isTop)
+	{
+		return CubeFace::face[1];
+	}
+	else if (loc == 4 && !isTop)
+	{
+		return CubeFace::face[7];
+	}
+	else if (loc >= 5)
+	{
+		// if loc too large just sub 4 from loc and getEdge again
+		return CubeFace::getEdge(loc - 4);
+	}
+	else if (loc <= 0)
+	{
+		// if loc too small just add 4 from loc and getEdge again
+		return CubeFace::getEdge(loc + 4);
+	}
+	else
+	{
+		; // We shouldn't ever get here
+	}
+}
+
 CubeColor CubeFace::getColors(int loc)
 {
-	switch (loc)
-	{
-	case 0:
-	case 1:
-	case 2:
-	case 3:
-	case 4:
-	case 5:
-	case 6:
-	case 7:
-	case 8:
+	if (loc > -1 && loc < 9)
 		return CubeFace::face[loc];
-		break;
-	default:
-		throw new string("Error invalid Selection");
-		break;
+	else if (loc >= 9)
+	{
+		// if loc too large just sub 8 from loc and getColors again
+		return CubeFace::getColors(loc - 8);
 	}
+	else if (loc <= -1)
+	{
+		// if loc too small just add 8 from loc and getColors again
+		return CubeFace::getColors(loc + 8);
+	}
+	else 
+	{
+		; // We shouldn't ever get here
+	}
+
+	//switch (loc)
+	//{
+	//case 0:
+	//case 1:
+	//case 2:
+	//case 3:
+	//case 4:
+	//case 5:
+	//case 6:
+	//case 7:
+	//case 8:
+	//	return CubeFace::face[loc];
+	//	break;
+	//default:
+	//	throw new string("Error invalid Selection");
+	//	break;
+	//}
 
 }
 

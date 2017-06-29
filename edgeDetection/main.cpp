@@ -749,6 +749,7 @@ int main(int argc, char* argv[])
 	{
 		// No need for OpenCV opening saved cube
 		cube.loadCube();
+		cube.displayCube();
 	}
 
 	cube.solveCube();

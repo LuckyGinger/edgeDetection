@@ -119,10 +119,9 @@ void CubeCube::rotateClockwiseFace(char f)
 //	vector<CubeColor> colors;
 	CubeFace tempFace;
 
-	if (f == orientChar[0])  // bottom face
+	if (f == orientChar[0])  // Down face (D)
 	{
-		tempFace = cube[_f[1]];
-		for (int i = 6; i < tempFace.getMaxColors(); i++)
+		for (int i = 6; i < cube[_f[0]].getMaxColors(); i++)
 		{
 			colors.push_back(cube[_f[1]].getColors(i));
 			colors.push_back(cube[_f[2]].getColors(i));
@@ -138,35 +137,370 @@ void CubeCube::rotateClockwiseFace(char f)
 			cube[_f[1]].setColor(colors.front(), i);
 			colors.pop_front();
 		}
-		cube[_f[0]].rotateClockwise(1);
+		cube[_f[0]].rotateClockwise();
+
+		solution += "D,";
+	}
+	else if (f == orientChar[1]) // Left face (L)
+	{
+		tempFace = cube[_f[4]];
+		tempFace.rotateClockwise(2);
+		for (int i = 0; i < cube[_f[0]].getMaxColors(); i+=3)
+		{
+			colors.push_back(cube[_f[5]].getColors(i));
+			colors.push_back(cube[_f[2]].getColors(i));
+			colors.push_back(cube[_f[0]].getColors(i));
+			colors.push_back(tempFace.getColors(i));
+
+			cube[_f[2]].setColor(colors.front(), i);
+			colors.pop_front();
+			cube[_f[0]].setColor(colors.front(), i);
+			colors.pop_front();
+			tempFace.setColor(colors.front(), i);
+			colors.pop_front();
+			cube[_f[5]].setColor(colors.front(), i);
+			colors.pop_front();
+		}
+		tempFace.rotate180();
+		cube[_f[4]] = tempFace;
+
+		cube[_f[1]].rotateClockwise();
+		solution += "L,";
+	}
+	else if (f == orientChar[2]) // Front face (F)
+	{
+		cube[_f[0]].rotateCounterClockwise();
+		cube[_f[1]].rotate180();
+		cube[_f[5]].rotateClockwise();
+		for (int i = 0; i < cube[_f[0]].getMaxColors(); i += 3)
+		{
+			colors.push_back(cube[_f[5]].getColors(i));
+			colors.push_back(cube[_f[3]].getColors(i));
+			colors.push_back(cube[_f[0]].getColors(i));
+			colors.push_back(cube[_f[1]].getColors(i));
+
+			cube[_f[3]].setColor(colors.front(), i);
+			colors.pop_front();
+			cube[_f[0]].setColor(colors.front(), i);
+			colors.pop_front();
+			cube[_f[1]].setColor(colors.front(), i);
+			colors.pop_front();
+			cube[_f[5]].setColor(colors.front(), i);
+			colors.pop_front();
+		}
+		cube[_f[0]].rotateClockwise();
+		cube[_f[1]].rotate180();
+		cube[_f[5]].rotateCounterClockwise();
+
+		cube[_f[2]].rotateClockwise();
+		solution += "F,";
+	}
+	else if (f == orientChar[3]) // Right face (R)
+	{
+		cube[_f[4]].rotate180();
+		for (int i = 2; i < cube[_f[0]].getMaxColors(); i += 3)
+		{
+			colors.push_back(cube[_f[5]].getColors(i));
+			colors.push_back(cube[_f[4]].getColors(i));
+			colors.push_back(cube[_f[0]].getColors(i));
+			colors.push_back(cube[_f[2]].getColors(i));
+
+			cube[_f[4]].setColor(colors.front(), i);
+			colors.pop_front();
+			cube[_f[0]].setColor(colors.front(), i);
+			colors.pop_front();
+			cube[_f[2]].setColor(colors.front(), i);
+			colors.pop_front();
+			cube[_f[5]].setColor(colors.front(), i);
+			colors.pop_front();
+		}
+		cube[_f[4]].rotate180();
+
+		cube[_f[3]].rotateClockwise();
+		solution += "R,";
+	}
+	else if (f == orientChar[4]) // Back face (B)
+	{
+		cube[_f[0]].rotateCounterClockwise();
+		cube[_f[1]].rotate180();
+		cube[_f[5]].rotateClockwise();
+		for (int i = 2; i < cube[_f[0]].getMaxColors(); i += 3)
+		{
+			colors.push_back(cube[_f[5]].getColors(i));
+			colors.push_back(cube[_f[1]].getColors(i));
+			colors.push_back(cube[_f[0]].getColors(i));
+			colors.push_back(cube[_f[3]].getColors(i));
+
+			cube[_f[1]].setColor(colors.front(), i);
+			colors.pop_front();
+			cube[_f[0]].setColor(colors.front(), i);
+			colors.pop_front();
+			cube[_f[3]].setColor(colors.front(), i);
+			colors.pop_front();
+			cube[_f[5]].setColor(colors.front(), i);
+			colors.pop_front();
+		}
+		cube[_f[0]].rotateClockwise();
+		cube[_f[1]].rotate180();
+		cube[_f[5]].rotateCounterClockwise();
 
 		solution += "B,";
-	}
-	else if (f == orientChar[1]) // left face
-	{
 
-		cube[_f[1]].rotateClockwise(1);
-	}
-	else if (f == orientChar[2]) // middle face
-	{
-
-		cube[_f[2]].rotateClockwise(1);
-	}
-	else if (f == orientChar[3]) // right face
-	{
-
-		cube[_f[3]].rotateClockwise(1);
-	}
-	else if (f == orientChar[4]) // back face
-	{
-
-		cube[_f[4]].rotateClockwise(1);
+		cube[_f[4]].rotateClockwise();
 	}
 	else if (f == orientChar[5]) // top face
 	{
+		for (int i = 0; i < cube[_f[0]].getMaxColors() - 6; i++)
+		{
+			colors.push_back(cube[_f[1]].getColors(i));
+			colors.push_back(cube[_f[4]].getColors(i));
+			colors.push_back(cube[_f[3]].getColors(i));
+			colors.push_back(cube[_f[2]].getColors(i));
 
-		cube[_f[5]].rotateClockwise(1);
+			cube[_f[4]].setColor(colors.front(), i);
+			colors.pop_front();
+			cube[_f[3]].setColor(colors.front(), i);
+			colors.pop_front();
+			cube[_f[2]].setColor(colors.front(), i);
+			colors.pop_front();
+			cube[_f[1]].setColor(colors.front(), i);
+			colors.pop_front();
+		}
+
+		cube[_f[5]].rotateClockwise();
+		solution += "U,";
 	}
+	CubeCube::totalMoves++;
+}
+
+void CubeCube::rotateCounterClockwiseFace(char f)
+{
+	deque<CubeColor> colors;
+	//	vector<CubeColor> colors;
+	CubeFace tempFace;
+
+	if (f == orientChar[0])  // Down face (D)
+	{
+		for (int i = 6; i < cube[_f[0]].getMaxColors(); i++)
+		{
+			colors.push_back(cube[_f[1]].getColors(i));
+			colors.push_back(cube[_f[4]].getColors(i));
+			colors.push_back(cube[_f[3]].getColors(i));
+			colors.push_back(cube[_f[2]].getColors(i));
+
+			cube[_f[4]].setColor(colors.front(), i);
+			colors.pop_front();
+			cube[_f[3]].setColor(colors.front(), i);
+			colors.pop_front();
+			cube[_f[2]].setColor(colors.front(), i);
+			colors.pop_front();
+			cube[_f[1]].setColor(colors.front(), i);
+			colors.pop_front();
+		}
+		cube[_f[0]].rotateCounterClockwise();
+
+		solution += "D',";
+	}
+	else if (f == orientChar[1]) // Left face (L)
+	{
+		// rotate all adjacent sides
+		//  +---+---+---+
+		//  |   |   | X |
+		//  +---+---+---+
+		//  |   |   | X |
+		//  +---+---+---+
+		//  |   |   | X |
+		//  +---+---+---+
+
+		cube[_f[4]].rotate180();
+		for (int i = 0; i < cube[_f[0]].getMaxColors(); i += 3)
+		{
+			colors.push_back(cube[_f[5]].getColors(i));
+			colors.push_back(cube[_f[4]].getColors(i));
+			colors.push_back(cube[_f[0]].getColors(i));
+			colors.push_back(cube[_f[2]].getColors(i));
+
+			cube[_f[4]].setColor(colors.front(), i);
+			colors.pop_front();
+			cube[_f[0]].setColor(colors.front(), i);
+			colors.pop_front();
+			cube[_f[2]].setColor(colors.front(), i);
+			colors.pop_front();
+			cube[_f[5]].setColor(colors.front(), i);
+			colors.pop_front();
+		}
+		cube[_f[4]].rotate180();
+
+		cube[_f[1]].rotateCounterClockwise();
+		solution += "L',";
+	}
+	else if (f == orientChar[2]) // Front face (F)
+	{
+		// rotate all adjacent sides
+		//  +---+---+---+
+		//  | X |   |   |
+		//  +---+---+---+
+		//  | X |   |   |
+		//  +---+---+---+
+		//  | X |   |   |
+		//  +---+---+---+
+
+		cube[_f[0]].rotateCounterClockwise();
+		cube[_f[1]].rotate180();
+		cube[_f[5]].rotateClockwise();
+		for (int i = 0; i < cube[_f[0]].getMaxColors(); i += 3)
+		{
+			colors.push_back(cube[_f[5]].getColors(i));
+			colors.push_back(cube[_f[1]].getColors(i));
+			colors.push_back(cube[_f[0]].getColors(i));
+			colors.push_back(cube[_f[3]].getColors(i));
+
+			cube[_f[1]].setColor(colors.front(), i);
+			colors.pop_front();
+			cube[_f[0]].setColor(colors.front(), i);
+			colors.pop_front();
+			cube[_f[3]].setColor(colors.front(), i);
+			colors.pop_front();
+			cube[_f[5]].setColor(colors.front(), i);
+			colors.pop_front();
+		}
+		cube[_f[0]].rotateClockwise();
+		cube[_f[1]].rotate180();
+		cube[_f[5]].rotateCounterClockwise();
+
+		cube[_f[2]].rotateCounterClockwise();
+		solution += "F',";
+	}
+	else if (f == orientChar[3]) // Right face (R)
+	{
+		// rotate all adjacent sides
+		//  +---+---+---+
+		//  |   |   | X |
+		//  +---+---+---+
+		//  |   |   | X |
+		//  +---+---+---+
+		//  |   |   | X |
+		//  +---+---+---+
+
+		cube[_f[4]].rotate180();
+		for (int i = 2; i < cube[_f[0]].getMaxColors(); i += 3)
+		{
+			colors.push_back(cube[_f[5]].getColors(i));
+			colors.push_back(cube[_f[2]].getColors(i));
+			colors.push_back(cube[_f[0]].getColors(i));
+			colors.push_back(cube[_f[4]].getColors(i));
+
+			cube[_f[2]].setColor(colors.front(), i);
+			colors.pop_front();
+			cube[_f[0]].setColor(colors.front(), i);
+			colors.pop_front();
+			cube[_f[4]].setColor(colors.front(), i);
+			colors.pop_front();
+			cube[_f[5]].setColor(colors.front(), i);
+			colors.pop_front();
+		}
+		cube[_f[4]].rotate180();
+
+		cube[_f[3]].rotateCounterClockwise();
+		solution += "R',";
+	}
+	else if (f == orientChar[4]) // Back face (B)
+	{
+		// rotate all adjacent sides
+		//  +---+---+---+
+		//  | X | X | X |
+		//  +---+---+---+
+		//  |   |   |   |
+		//  +---+---+---+
+		//  |   |   |   |
+		//  +---+---+---+
+
+		cube[_f[0]].rotateCounterClockwise();
+		cube[_f[1]].rotate180();
+		cube[_f[5]].rotateClockwise();
+		for (int i = 2; i < cube[_f[0]].getMaxColors(); i += 3)
+		{
+			colors.push_back(cube[_f[5]].getColors(i));
+			colors.push_back(cube[_f[3]].getColors(i));
+			colors.push_back(cube[_f[0]].getColors(i));
+			colors.push_back(cube[_f[1]].getColors(i));
+
+			cube[_f[3]].setColor(colors.front(), i);
+			colors.pop_front();
+			cube[_f[0]].setColor(colors.front(), i);
+			colors.pop_front();
+			cube[_f[1]].setColor(colors.front(), i);
+			colors.pop_front();
+			cube[_f[5]].setColor(colors.front(), i);
+			colors.pop_front();
+		}
+		cube[_f[0]].rotateClockwise();
+		cube[_f[1]].rotate180();
+		cube[_f[5]].rotateCounterClockwise();
+
+		cube[_f[4]].rotateCounterClockwise();
+		solution += "B',";
+	}
+	else if (f == orientChar[5]) // top face
+	{
+		for (int i = 0; i < cube[_f[0]].getMaxColors() - 6; i++)
+		{
+			colors.push_back(cube[_f[1]].getColors(i));
+			colors.push_back(cube[_f[2]].getColors(i));
+			colors.push_back(cube[_f[3]].getColors(i));
+			colors.push_back(cube[_f[4]].getColors(i));
+
+			cube[_f[2]].setColor(colors.front(), i);
+			colors.pop_front();
+			cube[_f[3]].setColor(colors.front(), i);
+			colors.pop_front();
+			cube[_f[4]].setColor(colors.front(), i);
+			colors.pop_front();
+			cube[_f[1]].setColor(colors.front(), i);
+			colors.pop_front();
+		}
+
+		cube[_f[5]].rotateCounterClockwise();
+		solution += "U',";
+	}
+	CubeCube::totalMoves++;
+}
+
+void CubeCube::rotateFromFeed(string sMoves)
+{
+	stringstream ssMove(sMoves);
+	vector<string> moves;
+	string move;
+	while (getline(ssMove, move, ','))
+	{
+		moves.push_back(move);
+		
+		if (move == "D")
+			rotateClockwiseFace(orientChar.at(0));
+		else if (move == "L")
+			rotateClockwiseFace(orientChar.at(1));
+		else if (move == "F")
+			rotateClockwiseFace(orientChar.at(2));
+		else if (move == "R")
+			rotateClockwiseFace(orientChar.at(3));
+		else if (move == "B")
+			rotateClockwiseFace(orientChar.at(4));
+		else if (move == "U")
+			rotateClockwiseFace(orientChar.at(5));
+		else if (move == "D'")
+			rotateCounterClockwiseFace(orientChar.at(0));
+		else if (move == "L'")
+			rotateCounterClockwiseFace(orientChar.at(1));
+		else if (move == "F'")
+			rotateCounterClockwiseFace(orientChar.at(2));
+		else if (move == "R'")
+			rotateCounterClockwiseFace(orientChar.at(3));
+		else if (move == "B'")
+			rotateCounterClockwiseFace(orientChar.at(4));
+		else if (move == "U'")
+			rotateCounterClockwiseFace(orientChar.at(5));
+	}
+
 }
 
 string CubeCube::getSolution()
@@ -174,15 +508,156 @@ string CubeCube::getSolution()
 	return CubeCube::solution;
 }
 
+
+// This is a super poor way of handling this.
+// But this is where I am at right now...
+// TODO: redo the whole project but better.
+CubeFace CubeCube::getRight(int i)
+{
+	// get the next right face on the 
+	if (i >= 1 && i <= 4)
+	{
+		if (i == 4)
+		{
+			return CubeCube::cube[_f[1]];
+		}
+		else 
+		{
+			return CubeCube::cube[_f[i + 1]];
+		}
+	}
+	else if (i > 4)
+	{
+		return CubeCube::getRight(i - 4);
+	}
+	else if (i < 1)
+	{
+		return CubeCube::getRight(i + 4);
+	}
+	else
+	{
+		; // Shouldn't get here
+	}
+
+}
+
+// TODO: Same as getRight
+CubeFace CubeCube::getLeft(int i)
+{
+	// get the next Left face on the 
+	if (i >= 1 && i <= 4)
+	{
+		if (i == 1)
+		{
+			return CubeCube::cube[_f[4]];
+		}
+		else
+		{
+			return CubeCube::cube[_f[i - 1]];
+		}
+	}
+	else if (i > 4)
+	{
+		return CubeCube::getLeft(i - 4);
+	}
+	else if (i < 1)
+	{
+		return CubeCube::getLeft(i + 4);
+	}
+	else
+	{
+		; // Shouldn't get here
+	}
+
+}
+
+//CubeColor CubeCube::getAdjacentEdge(int current, int edge)
+//{
+//	//for (int i = 0; i < 4; i++)
+//	//{
+//	//	if ()
+//	//}
+//
+//	if (edge == )
+//
+//}
+
+void CubeCube::solveStage1()
+{
+	// Solve the bottom cross
+	for (int i = 0 + 1; i < 4 + 1; i++)
+	{
+		// The four times that the piece is on the right face, but needs to be spun into position
+		if (cube[_f[i]].getColors(1).getTypeChar() == orientChar.at(i) && 
+			cube[_f[5]].getEdge(i, true).getTypeChar() == orientChar.at(0))
+		{
+			rotateClockwiseFace(orientChar.at(i));
+			rotateClockwiseFace(orientChar.at(i));
+		}
+		else if (cube[_f[i]].getColors(5).getTypeChar() == orientChar.at(i) &&
+			getRight(i).getColors(3).getTypeChar() == orientChar.at(0))
+		{
+			rotateClockwiseFace(orientChar.at(i));
+		}
+		else if (cube[_f[i]].getColors(3).getTypeChar() == orientChar.at(i) &&
+			getLeft(i).getColors(5).getTypeChar() == orientChar.at(0))
+		{
+			rotateCounterClockwiseFace(orientChar.at(i));
+		}
+		else if (cube[_f[i]].getColors(7).getTypeChar() == orientChar.at(i) &&
+			cube[_f[0]].getEdge(i).getTypeChar() == orientChar.at(0))
+		{
+			; // Do nothing, Already in the right place
+		}
+		// The four times that the piece is on the right face, but has twisted orientation
+		else if (cube[_f[i]].getColors(1).getTypeChar() == orientChar.at(0) &&
+			cube[_f[5]].getEdge(i,true).getTypeChar() == orientChar.at(i))
+		{
+			rotateCounterClockwiseFace(orientChar.at(5));
+			rotateCounterClockwiseFace(getRight(i).getCenter().getTypeChar());
+			rotateClockwiseFace(orientChar.at(i));
+			rotateClockwiseFace(getRight(i).getCenter().getTypeChar());
+		}
+		else if (cube[_f[i]].getColors(5).getTypeChar() == orientChar.at(0) &&
+			getRight(i).getColors(3).getTypeChar() == orientChar.at(i))
+		{
+			rotateClockwiseFace(getRight(i).getCenter().getTypeChar());
+			rotateClockwiseFace(orientChar.at(5));
+			rotateCounterClockwiseFace(getRight(i).getCenter().getTypeChar());
+			rotateClockwiseFace(orientChar.at(i));
+			rotateClockwiseFace(orientChar.at(i));
+		}
+		else if (cube[_f[i]].getColors(3).getTypeChar() == orientChar.at(0) &&
+			getLeft(i).getColors(5).getTypeChar() == orientChar.at(i))
+		{
+			rotateCounterClockwiseFace(getLeft(i).getCenter().getTypeChar());
+			rotateCounterClockwiseFace(orientChar.at(5));
+			rotateClockwiseFace(getLeft(i).getCenter().getTypeChar());
+			rotateClockwiseFace(orientChar.at(i));
+			rotateClockwiseFace(orientChar.at(i));
+		}
+		else if (cube[_f[i]].getColors(7).getTypeChar() == orientChar.at(0) &&
+			cube[_f[0]].getEdge(i).getTypeChar() == orientChar.at(i))
+		{
+			rotateCounterClockwiseFace(orientChar.at(i));
+			rotateClockwiseFace(getRight(i).getCenter().getTypeChar());
+			rotateClockwiseFace(orientChar.at(5));
+			rotateCounterClockwiseFace(getRight(i).getCenter().getTypeChar());
+			rotateClockwiseFace(orientChar.at(i));
+			rotateClockwiseFace(orientChar.at(i));
+		}
+		// Next
+	}
+}
+
 void CubeCube::solveCube()
 {
-	rotateClockwiseFace('g');
-	rotateClockwiseFace('g');
-
+	solveStage1();
+	cout << "Total Moves = " << CubeCube::totalMoves << endl;
 	cout << getSolution() << endl;
-
-	// TODO: Solve the cube
 }
+
+
 
 void CubeCube::saveCube()
 {

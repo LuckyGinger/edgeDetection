@@ -39,15 +39,16 @@ private:
 	string orientChar;
 	bool isLoading = false;
 
+	int totalMoves = 0;
 	string solution = "";
 
-	// Actuall cube order stored as char of center cubie
-	// 0 - Bottom
-	// 1 - Left
-	// 2 - Front
-	// 3 - Right
-	// 4 - Back
-	// 5 - Top
+	// Actuall location of face on cube array in int
+	// _f[0] - Bottom
+	// _f[1] - Left
+	// _f[2] - Front
+	// _f[3] - Right
+	// _f[4] - Back
+	// _f[5] - Top
 	int _f[MAX_FACES] = { 0,0,0,0,0,0 };
 
 	int colortoi(char c);
@@ -58,6 +59,15 @@ private:
 	void setOrient(char color);  // take the bottom color
 
 	void rotateClockwiseFace(char f);
+	void rotateCounterClockwiseFace(char f);
 
+	void rotateFromFeed(string sMoves);
+
+	CubeFace getRight(int i);
+	CubeFace getLeft(int i);
+
+	CubeColor getAdjacentEdge(int current, int edge);
+
+	void solveStage1();
 };
 

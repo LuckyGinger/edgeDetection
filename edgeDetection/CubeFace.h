@@ -14,9 +14,12 @@ public:
 	void setColor(CubeColor c, int loc);
 
 	CubeColor getColors(int loc);
+	CubeColor getEdge(int loc, bool isTop = false);
 	CubeColor getCenter();
 
-	void rotateClockwise(int num);
+	void rotateClockwise(int num = 1);
+	void rotateCounterClockwise(int num = 1);
+	void rotate180();
 
 	void displayFace();
 
