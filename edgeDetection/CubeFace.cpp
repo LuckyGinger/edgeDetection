@@ -171,6 +171,55 @@ CubeColor CubeFace::getOppositeEdge(int loc, bool isTop)
 	}
 }
 
+CubeColor CubeFace::getCorner(int theFace, int loc, bool isTop)
+{
+	// TODO: account for the top face
+	if (theFace == 1)
+	{
+		if (loc == 1)
+		{
+			return isTop ? CubeFace::face[0] : CubeFace::face[6];
+		}
+		else if (loc == 2)
+		{
+			return isTop ? CubeFace::face[6] : CubeFace::face[0];
+		}
+	}
+	else if (theFace == 2)
+	{
+		if (loc == 1)
+		{
+			return isTop ? CubeFace::face[6] : CubeFace::face[0];
+		}
+		else if (loc == 2)
+		{
+			return isTop ? CubeFace::face[8] : CubeFace::face[2];
+		}
+	}
+	else if (theFace == 3)
+	{
+		if (loc == 1)
+		{
+			return isTop ? CubeFace::face[8] : CubeFace::face[2];
+		}
+		else if (loc == 2)
+		{
+			return isTop ? CubeFace::face[2] : CubeFace::face[8];
+		}
+	}
+	else if (theFace == 4)
+	{
+		if (loc == 1)
+		{
+			return isTop ? CubeFace::face[2] : CubeFace::face[8];
+		}
+		else if (loc == 2)
+		{
+			return isTop ? CubeFace::face[0] : CubeFace::face[6];
+		}
+	}
+}
+
 CubeColor CubeFace::getColors(int loc)
 {
 	if (loc > -1 && loc < 9)

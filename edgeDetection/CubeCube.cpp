@@ -609,9 +609,9 @@ CubeFace CubeCube::getOpposite(int i)
 //
 //}
 
+// Solve the bottom cross
 void CubeCube::solveStage1()
 {
-	// Solve the bottom cross
 	for (int i = 0 + 1; i < 4 + 1; i++)
 	{
 		// The four times that the piece is on the right face, but needs to be spun into position
@@ -785,6 +785,142 @@ void CubeCube::solveStage1()
 			rotateClockwiseFace(orientChar.at(i));
 		}
 		// The four cases where the edge pieces are in the "middle" colom and have the wrong orientation
+		else if (getRight(i).getColors(1).getTypeChar() == orientChar.at(0) &&
+			cube[_f[5]].getEdge(i + 1, true).getTypeChar() == orientChar.at(i))
+		{
+			rotateCounterClockwiseFace(getRight(i).getCenter().getTypeChar());
+			rotateClockwiseFace(orientChar.at(i));
+			rotateClockwiseFace(getRight(i).getCenter().getTypeChar());
+		}
+		else if (getLeft(i).getColors(1).getTypeChar() == orientChar.at(0) &&
+			cube[_f[5]].getEdge(i - 1, true).getTypeChar() == orientChar.at(i))
+		{
+			rotateClockwiseFace(getLeft(i).getCenter().getTypeChar());
+			rotateCounterClockwiseFace(orientChar.at(i));
+			rotateCounterClockwiseFace(getLeft(i).getCenter().getTypeChar());
+		}
+		else if (getRight(i).getColors(7).getTypeChar() == orientChar.at(0) &&
+			cube[_f[0]].getEdge(i + 1).getTypeChar() == orientChar.at(i))
+		{
+			rotateClockwiseFace(getRight(i).getCenter().getTypeChar());
+			rotateClockwiseFace(orientChar.at(i));
+			rotateCounterClockwiseFace(getRight(i).getCenter().getTypeChar());
+		}
+		else if (getLeft(i).getColors(7).getTypeChar() == orientChar.at(0) &&
+			cube[_f[0]].getEdge(i - 1).getTypeChar() == orientChar.at(i))
+		{
+			rotateCounterClockwiseFace(getLeft(i).getCenter().getTypeChar());
+			rotateClockwiseFace(orientChar.at(i));
+			rotateClockwiseFace(getLeft(i).getCenter().getTypeChar());
+		}
+
+		solution += " | ";
+		CubeCube::totalSeq += 1;
+	}
+}
+
+// Solve the botto corners (technically appart of stage 1)
+void CubeCube::solveStage2()
+{
+	for (int i = 0 + 1; i < 4 + 1; i++)
+	{
+		// The three times the corner cubie is in the right place but in the wrong orientation
+		if (cube[_f[i]].getColors(8).getTypeChar() == orientChar.at(0) &&
+			getRight(i).getColors(6).getTypeChar() == orientChar.at(i) &&
+			cube[_f[0]].getCorner(i, 2).getTypeChar() == getRight(i).getCenter().getTypeChar())
+		{
+			// RU'R'URU'R
+			rotateClockwiseFace(getRight(i).getCenter().getTypeChar());
+			rotateCounterClockwiseFace(orientChar.at(5));
+			rotateCounterClockwiseFace(getRight(i).getCenter().getTypeChar());
+			rotateClockwiseFace(orientChar.at(5));
+			rotateClockwiseFace(getRight(i).getCenter().getTypeChar());
+			rotateCounterClockwiseFace(orientChar.at(5));
+			rotateCounterClockwiseFace(getRight(i).getCenter().getTypeChar());
+		}
+		else if (cube[_f[i]].getColors(8).getTypeChar() == getRight(i).getCenter().getTypeChar() &&
+			getRight(i).getColors(6).getTypeChar() == orientChar.at(0) &&
+			cube[_f[0]].getCorner(i, 2).getTypeChar() == orientChar.at(i))
+		{
+			// RUR'U'RUR'
+			rotateClockwiseFace(getRight(i).getCenter().getTypeChar());
+			rotateClockwiseFace(orientChar.at(5));
+			rotateCounterClockwiseFace(getRight(i).getCenter().getTypeChar());
+			rotateCounterClockwiseFace(orientChar.at(5));
+			rotateClockwiseFace(getRight(i).getCenter().getTypeChar());
+			rotateClockwiseFace(orientChar.at(5));
+			rotateCounterClockwiseFace(getRight(i).getCenter().getTypeChar());
+		}
+		else if (cube[_f[i]].getColors(8).getTypeChar() == orientChar.at(i) &&
+			getRight(i).getColors(6).getTypeChar() == getRight(i).getCenter().getTypeChar() &&
+			cube[_f[0]].getCorner(i, 2).getTypeChar() == orientChar.at(0))
+		{
+			; // Do nothing. Already in the right place
+		}
+		// The three times the cubie is directly above where it should go
+		else if (cube[_f[i]].getColors(2).getTypeChar() == orientChar.at(0) &&
+			getRight(i).getColors(0).getTypeChar() == getRight(i).getCenter().getTypeChar() &&
+			cube[_f[5]].getCorner(i, 2, true).getTypeChar() == orientChar.at(i))
+		{
+			rotateClockwiseFace(orientChar.at(5));
+			rotateClockwiseFace(getRight(i).getCenter().getTypeChar());
+			rotateCounterClockwiseFace(orientChar.at(5));
+			rotateCounterClockwiseFace(getRight(i).getCenter().getTypeChar());
+		}
+		else if (cube[_f[i]].getColors(2).getTypeChar() == orientChar.at(i) &&
+			getRight(i).getColors(0).getTypeChar() == orientChar.at(0) &&
+			cube[_f[5]].getCorner(i, 2, true).getTypeChar() == getRight(i).getCenter().getTypeChar())
+		{
+			rotateClockwiseFace(getRight(i).getCenter().getTypeChar());
+			rotateClockwiseFace(orientChar.at(5));
+			rotateCounterClockwiseFace(getRight(i).getCenter().getTypeChar());
+		}
+		else if (cube[_f[i]].getColors(2).getTypeChar() == getRight(i).getCenter().getTypeChar() &&
+			getRight(i).getColors(0).getTypeChar() == orientChar.at(i) &&
+			cube[_f[5]].getCorner(i, 2, true).getTypeChar() == orientChar.at(0))
+		{
+			rotateClockwiseFace(getRight(i).getCenter().getTypeChar());
+			rotateClockwiseFace(orientChar.at(5));
+			rotateClockwiseFace(orientChar.at(5));
+			rotateCounterClockwiseFace(getRight(i).getCenter().getTypeChar());
+			rotateCounterClockwiseFace(orientChar.at(5));
+			rotateClockwiseFace(getRight(i).getCenter().getTypeChar());
+			rotateClockwiseFace(orientChar.at(5));
+			rotateCounterClockwiseFace(getRight(i).getCenter().getTypeChar());
+		}
+		// The thre times the cubie is up and to the left of where it should go
+		else if (cube[_f[i]].getColors(0).getTypeChar() == getRight(i).getCenter().getTypeChar() &&
+			getLeft(i).getColors(2).getTypeChar() == orientChar.at(0) &&
+			cube[_f[5]].getCorner(i, 1, true).getTypeChar() == orientChar.at(i))
+		{
+			rotateClockwiseFace(getRight(i).getCenter().getTypeChar());
+			rotateCounterClockwiseFace(orientChar.at(5));
+			rotateCounterClockwiseFace(getRight(i).getCenter().getTypeChar());
+		}
+		else if (cube[_f[i]].getColors(0).getTypeChar() == orientChar.at(i) &&
+			getLeft(i).getColors(2).getTypeChar() == getRight(i).getCenter().getTypeChar() &&
+			cube[_f[5]].getCorner(i, 1, true).getTypeChar() == orientChar.at(0))
+		{
+			// U'RUUR'U'RUR'
+			rotateCounterClockwiseFace(orientChar.at(5));
+			rotateClockwiseFace(getRight(i).getCenter().getTypeChar());
+			rotateClockwiseFace(orientChar.at(5));
+			rotateClockwiseFace(orientChar.at(5));
+			rotateCounterClockwiseFace(getRight(i).getCenter().getTypeChar());
+			rotateCounterClockwiseFace(orientChar.at(5));
+			rotateClockwiseFace(getRight(i).getCenter().getTypeChar());
+			rotateClockwiseFace(orientChar.at(5));
+			rotateCounterClockwiseFace(getRight(i).getCenter().getTypeChar());
+		}
+		else if (cube[_f[i]].getColors(0).getTypeChar() == orientChar.at(0) &&
+			getLeft(i).getColors(2).getTypeChar() == getRight(i).getCenter().getTypeChar() &&
+			cube[_f[5]].getCorner(i, 1, true).getTypeChar() == orientChar.at(i))
+		{
+			rotateCounterClockwiseFace(orientChar.at(5));
+			rotateClockwiseFace(getRight(i).getCenter().getTypeChar());
+			rotateClockwiseFace(orientChar.at(5));
+			rotateCounterClockwiseFace(getRight(i).getCenter().getTypeChar());
+		}
 
 
 		solution += " | ";
@@ -795,6 +931,7 @@ void CubeCube::solveStage1()
 void CubeCube::solveCube()
 {
 	solveStage1();
+	solveStage2();
 	cout << "Total Moves = " << CubeCube::totalMoves << endl;
 	cout << "Total Sequences = " << CubeCube::totalSeq << endl;
 	cout << getSolution() << endl;

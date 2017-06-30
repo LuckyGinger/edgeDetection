@@ -16,6 +16,7 @@ public:
 	CubeColor getColors(int loc);
 	CubeColor getEdge(int loc, bool isTop = false);
 	CubeColor getOppositeEdge(int loc, bool isTop = false);
+	CubeColor getCorner(int theFace, int loc, bool isTop = false);
 	CubeColor getCenter();
 
 	void rotateClockwise(int num = 1);

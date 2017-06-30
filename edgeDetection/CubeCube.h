@@ -71,5 +71,6 @@ private:
 	CubeColor getAdjacentEdge(int current, int edge);
 
 	void solveStage1();
+	void solveStage2();
 };
 
