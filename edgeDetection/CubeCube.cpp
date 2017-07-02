@@ -922,38 +922,103 @@ void CubeCube::solveStage2()
 			rotateCounterClockwiseFace(getRight(i).getCenter().getTypeChar());
 		}
 		// The three times the cubie is up and to the right of where it should go
-		//else if (cube[_f[i]].getColors(0).getTypeChar() == getRight(i).getCenter().getTypeChar() &&
-		//	getLeft(i).getColors(2).getTypeChar() == orientChar.at(0) &&
-		//	cube[_f[5]].getCorner(i, 1, true).getTypeChar() == orientChar.at(i))
-		//{
-		//	rotateClockwiseFace(getRight(i).getCenter().getTypeChar());
-		//	rotateCounterClockwiseFace(orientChar.at(5));
-		//	rotateCounterClockwiseFace(getRight(i).getCenter().getTypeChar());
-		//}
-		//else if (cube[_f[i]].getColors(0).getTypeChar() == orientChar.at(i) &&
-		//	getLeft(i).getColors(2).getTypeChar() == getRight(i).getCenter().getTypeChar() &&
-		//	cube[_f[5]].getCorner(i, 1, true).getTypeChar() == orientChar.at(0))
-		//{
-		////	 U'RUUR'U'RUR'
-		//	rotateCounterClockwiseFace(orientChar.at(5));
-		//	rotateClockwiseFace(getRight(i).getCenter().getTypeChar());
-		//	rotateClockwiseFace(orientChar.at(5));
-		//	rotateClockwiseFace(orientChar.at(5));
-		//	rotateCounterClockwiseFace(getRight(i).getCenter().getTypeChar());
-		//	rotateCounterClockwiseFace(orientChar.at(5));
-		//	rotateClockwiseFace(getRight(i).getCenter().getTypeChar());
-		//	rotateClockwiseFace(orientChar.at(5));
-		//	rotateCounterClockwiseFace(getRight(i).getCenter().getTypeChar());
-		//}
-		//else if (cube[_f[i]].getColors(0).getTypeChar() == orientChar.at(0) &&
-		//	getLeft(i).getColors(2).getTypeChar() == orientChar.at(i) &&
-		//	cube[_f[5]].getCorner(i, 1, true).getTypeChar() == getRight(i).getCenter().getTypeChar())
-		//{
-		//	rotateCounterClockwiseFace(orientChar.at(5));
-		//	rotateClockwiseFace(getRight(i).getCenter().getTypeChar());
-		//	rotateClockwiseFace(orientChar.at(5));
-		//	rotateCounterClockwiseFace(getRight(i).getCenter().getTypeChar());
-		//}
+		else if (getOpposite(i).getColors(0).getTypeChar() == orientChar.at(i) &&
+			getRight(i).getColors(2).getTypeChar() == getRight(i).getCenter().getTypeChar() &&
+			cube[_f[5]].getCorner(i + 1, 2, true).getTypeChar() == orientChar.at(0))
+		{
+			rotateClockwiseFace(orientChar.at(5));
+			rotateClockwiseFace(getRight(i).getCenter().getTypeChar());
+			rotateClockwiseFace(orientChar.at(5));
+			rotateClockwiseFace(orientChar.at(5));
+			rotateCounterClockwiseFace(getRight(i).getCenter().getTypeChar());
+			rotateCounterClockwiseFace(orientChar.at(5));
+			rotateClockwiseFace(getRight(i).getCenter().getTypeChar());
+			rotateClockwiseFace(orientChar.at(5));
+			rotateCounterClockwiseFace(getRight(i).getCenter().getTypeChar());
+		}
+		else if (getOpposite(i).getColors(0).getTypeChar() == getRight(i).getCenter().getTypeChar() &&
+			getRight(i).getColors(2).getTypeChar() == orientChar.at(0) &&
+			cube[_f[5]].getCorner(i + 1, 2, true).getTypeChar() == orientChar.at(i))
+		{
+			rotateClockwiseFace(orientChar.at(5));
+			rotateClockwiseFace(orientChar.at(5));
+			rotateClockwiseFace(getRight(i).getCenter().getTypeChar());
+			rotateCounterClockwiseFace(orientChar.at(5));
+			rotateCounterClockwiseFace(getRight(i).getCenter().getTypeChar());
+		}
+		else if (getOpposite(i).getColors(0).getTypeChar() == orientChar.at(0) &&
+			getRight(i).getColors(2).getTypeChar() == orientChar.at(i) &&
+			cube[_f[5]].getCorner(i + 1, 2, true).getTypeChar() == getRight(i).getCenter().getTypeChar())
+		{
+			rotateClockwiseFace(orientChar.at(5));
+			rotateClockwiseFace(getRight(i).getCenter().getTypeChar());
+			rotateClockwiseFace(orientChar.at(5));
+			rotateCounterClockwiseFace(getRight(i).getCenter().getTypeChar());
+		}
+		// The three times the cubie is on the top of the opposite side of the cube
+		else if (getOpposite(i).getColors(2).getTypeChar() == getRight(i).getCenter().getTypeChar() &&
+			getLeft(i).getColors(0).getTypeChar() == orientChar.at(i) &&
+			cube[_f[5]].getCorner(i - 1, 1, true).getTypeChar() == orientChar.at(0))
+		{
+			rotateClockwiseFace(getRight(i).getCenter().getTypeChar());
+			rotateClockwiseFace(orientChar.at(5));
+			rotateCounterClockwiseFace(getRight(i).getCenter().getTypeChar());
+			rotateClockwiseFace(orientChar.at(5));
+			rotateClockwiseFace(getRight(i).getCenter().getTypeChar());
+			rotateCounterClockwiseFace(orientChar.at(5));
+			rotateCounterClockwiseFace(getRight(i).getCenter().getTypeChar());
+		}
+		else if (getOpposite(i).getColors(2).getTypeChar() == orientChar.at(i) &&
+			getLeft(i).getColors(0).getTypeChar() == orientChar.at(0) &&
+			cube[_f[5]].getCorner(i - 1, 1, true).getTypeChar() == getRight(i).getCenter().getTypeChar())
+		{
+			rotateClockwiseFace(orientChar.at(5));
+			rotateClockwiseFace(orientChar.at(5));
+			rotateClockwiseFace(getRight(i).getCenter().getTypeChar());
+			rotateClockwiseFace(orientChar.at(5));
+			rotateCounterClockwiseFace(getRight(i).getCenter().getTypeChar());
+		}
+		else if (getOpposite(i).getColors(2).getTypeChar() == orientChar.at(0) &&
+			getLeft(i).getColors(0).getTypeChar() == getRight(i).getCenter().getTypeChar() &&
+			cube[_f[5]].getCorner(i - 1, 1, true).getTypeChar() == orientChar.at(i))
+		{
+			rotateClockwiseFace(getRight(i).getCenter().getTypeChar());
+			rotateClockwiseFace(orientChar.at(5));
+			rotateClockwiseFace(orientChar.at(5));
+			rotateCounterClockwiseFace(getRight(i).getCenter().getTypeChar());
+		}
+		// The three times that the cubie is on the right face but to the left of where it should go
+		else if (getOpposite(i).getColors(2).getTypeChar() == getRight(i).getCenter().getTypeChar() &&
+			getLeft(i).getColors(0).getTypeChar() == orientChar.at(i) &&
+			cube[_f[5]].getCorner(i - 1, 1, true).getTypeChar() == orientChar.at(0))
+		{
+			//rotateClockwiseFace(getRight(i).getCenter().getTypeChar());
+			//rotateClockwiseFace(orientChar.at(5));
+			//rotateCounterClockwiseFace(getRight(i).getCenter().getTypeChar());
+			//rotateClockwiseFace(orientChar.at(5));
+			//rotateClockwiseFace(getRight(i).getCenter().getTypeChar());
+			//rotateCounterClockwiseFace(orientChar.at(5));
+			//rotateCounterClockwiseFace(getRight(i).getCenter().getTypeChar());
+		}
+		else if (getOpposite(i).getColors(2).getTypeChar() == orientChar.at(i) &&
+			getLeft(i).getColors(0).getTypeChar() == orientChar.at(0) &&
+			cube[_f[5]].getCorner(i - 1, 1, true).getTypeChar() == getRight(i).getCenter().getTypeChar())
+		{
+			//rotateClockwiseFace(orientChar.at(5));
+			//rotateClockwiseFace(orientChar.at(5));
+			//rotateClockwiseFace(getRight(i).getCenter().getTypeChar());
+			//rotateClockwiseFace(orientChar.at(5));
+			//rotateCounterClockwiseFace(getRight(i).getCenter().getTypeChar());
+		}
+		else if (getOpposite(i).getColors(2).getTypeChar() == orientChar.at(0) &&
+			getLeft(i).getColors(0).getTypeChar() == getRight(i).getCenter().getTypeChar() &&
+			cube[_f[5]].getCorner(i - 1, 1, true).getTypeChar() == orientChar.at(i))
+		{
+			//rotateClockwiseFace(getRight(i).getCenter().getTypeChar());
+			//rotateClockwiseFace(orientChar.at(5));
+			//rotateClockwiseFace(orientChar.at(5));
+			//rotateCounterClockwiseFace(getRight(i).getCenter().getTypeChar());
+		}
 
 		solution += " | ";
 		CubeCube::totalSeq += 1;

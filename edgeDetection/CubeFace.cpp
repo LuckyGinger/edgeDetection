@@ -173,11 +173,11 @@ CubeColor CubeFace::getOppositeEdge(int loc, bool isTop)
 
 CubeColor CubeFace::getCorner(int theFace, int loc, bool isTop)
 {
-	// TODO: account for the top face
 	if (theFace == 1)
 	{
 		if (loc == 1)
 		{
+			//     isTop ?      For Top Face :   For Bottom Face
 			return isTop ? CubeFace::face[0] : CubeFace::face[6];
 		}
 		else if (loc == 2)
@@ -217,6 +217,20 @@ CubeColor CubeFace::getCorner(int theFace, int loc, bool isTop)
 		{
 			return isTop ? CubeFace::face[0] : CubeFace::face[6];
 		}
+	}
+	else if (theFace >= 5)
+	{
+		// if theFace too large just sub 4 from theFace and getCorner again
+		return CubeFace::getCorner(theFace - 4, loc, isTop);
+	}
+	else if (theFace <= 0)
+	{
+		// if theFace too small just add 4 from theFace and getCorner again
+		return CubeFace::getCorner(theFace + 4, loc, isTop);
+	}
+	else
+	{
+		; // We shouldn't ever get here
 	}
 }
 
