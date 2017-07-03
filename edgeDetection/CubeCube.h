@@ -68,9 +68,13 @@ private:
 	CubeFace getLeft(int i);
 	CubeFace getOpposite(int i);
 
-	CubeColor getAdjacentEdge(int current, int edge);
+	//CubeColor getAdjacentEdge(int current, int edge);
+
+	void edgeAlgRight(int i);
+	void edgeAlgLeft(int i);
 
 	void solveStage1();
 	void solveStage2();
+	void solveStage3();
 };
 

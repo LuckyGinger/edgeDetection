@@ -819,7 +819,7 @@ void CubeCube::solveStage1()
 	}
 }
 
-// Solve the botto corners (technically appart of stage 1)
+// Solve the bottom corners (technically appart of stage 1)
 void CubeCube::solveStage2()
 {
 	for (int i = 0 + 1; i < 4 + 1; i++)
@@ -1103,10 +1103,169 @@ void CubeCube::solveStage2()
 	}
 }
 
+// stage 3 algorithm helper right side
+void CubeCube::edgeAlgRight(int i)
+{
+	if (i > 4)
+		edgeAlgRight(i - 4);
+	else if (i < 1)
+		edgeAlgRight(i + 4);
+	else
+	{
+		char f = orientChar.at(i); // front face
+		char r = getRight(i).getCenter().getTypeChar(); // right face
+		rotateClockwiseFace(r);
+		rotateCounterClockwiseFace(orientChar.at(5));
+		rotateCounterClockwiseFace(r);
+		rotateCounterClockwiseFace(orientChar.at(5));
+		rotateCounterClockwiseFace(f);
+		rotateClockwiseFace(orientChar.at(5));
+		rotateClockwiseFace(f);
+	}
+	return;
+}
+
+// stage 3 algorithm helper left side
+void CubeCube::edgeAlgLeft(int i)
+{
+	if (i > 4)
+		edgeAlgLeft(i - 4);
+	else if (i < 1)
+		edgeAlgLeft(i + 4);
+	else
+	{
+		char f = orientChar.at(i); // front face
+		char l = getLeft(i).getCenter().getTypeChar(); // left face
+		rotateCounterClockwiseFace(l);
+		rotateClockwiseFace(orientChar.at(5));
+		rotateClockwiseFace(l);
+		rotateClockwiseFace(orientChar.at(5));
+		rotateClockwiseFace(f);
+		rotateCounterClockwiseFace(orientChar.at(5));
+		rotateCounterClockwiseFace(f);
+
+	}
+	return;
+}
+
+// Solve the middle layer corners
+void CubeCube::solveStage3()
+{
+	for (int i = 0 + 1; i < 4 + 1; i++)
+	{
+		/*right side cubie*/
+
+		// The three cases when the in the correct orientation but in the wrong place
+		if (cube[_f[i]].getColors(3).getTypeChar() == orientChar.at(i) &&
+			getLeft(i).getColors(5).getTypeChar() == getRight(i).getCenter().getTypeChar())
+		{
+			// move cubie out
+			rotateCounterClockwiseFace(getLeft(i).getCenter().getTypeChar());
+			rotateClockwiseFace(orientChar.at(5));
+			rotateClockwiseFace(getLeft(i).getCenter().getTypeChar());
+			rotateClockwiseFace(orientChar.at(5));
+			rotateClockwiseFace(orientChar.at(i));
+			rotateCounterClockwiseFace(orientChar.at(5));
+			rotateCounterClockwiseFace(orientChar.at(i));
+			// move cubie in
+
+
+			rotateCounterClockwiseFace(orientChar.at(i));
+			rotateClockwiseFace(orientChar.at(5));
+			rotateClockwiseFace(orientChar.at(i));
+			rotateClockwiseFace(orientChar.at(5));
+			rotateClockwiseFace(getRight(i).getCenter().getTypeChar());
+			rotateCounterClockwiseFace(orientChar.at(5));
+			rotateCounterClockwiseFace(getRight(i).getCenter().getTypeChar());
+
+		}
+		else if (cube[_f[i]].getColors(1).getTypeChar() == orientChar.at(i) &&
+			cube[_f[5]].getEdge(i, true).getTypeChar() == getRight(i).getCenter().getTypeChar())
+		{
+			// move cubie in
+			rotateClockwiseFace(orientChar.at(5));
+			rotateClockwiseFace(getRight(i).getCenter().getTypeChar());
+			rotateCounterClockwiseFace(orientChar.at(5));
+			rotateCounterClockwiseFace(getRight(i).getCenter().getTypeChar());
+			rotateCounterClockwiseFace(orientChar.at(5));
+			rotateCounterClockwiseFace(orientChar.at(i));
+			rotateClockwiseFace(orientChar.at(5));
+			rotateClockwiseFace(orientChar.at(i));
+		}
+		else if (cube[_f[i]].getColors(5).getTypeChar() == orientChar.at(i) &&
+			getRight(i).getColors(3).getTypeChar() == getRight(i).getCenter().getTypeChar())
+		{
+			; // In the correct place. Do nothing.
+		}
+		// The three cases when in the wrong orientation and in the wrong place
+		else if (cube[_f[i]].getColors(3).getTypeChar() == getRight(i).getCenter().getTypeChar() &&
+			getLeft(i).getColors(5).getTypeChar() == orientChar.at(i))
+		{
+			edgeAlgLeft(i);
+			rotateCounterClockwiseFace(orientChar.at(5));
+			edgeAlgRight(i);
+
+		}
+		else if (cube[_f[i]].getColors(1).getTypeChar() == getRight(i).getCenter().getTypeChar() &&
+			cube[_f[5]].getEdge(i, true).getTypeChar() == orientChar.at(i))
+		{
+			rotateClockwiseFace(orientChar.at(5));
+			rotateClockwiseFace(orientChar.at(5));
+			edgeAlgLeft(i + 1);
+		}
+		else if (cube[_f[i]].getColors(5).getTypeChar() == getRight(i).getCenter().getTypeChar() &&
+			getRight(i).getColors(3).getTypeChar() == orientChar.at(i))
+		{
+			edgeAlgRight(i);
+			rotateCounterClockwiseFace(orientChar.at(5));
+			edgeAlgRight(i);
+
+		}
+		// The four cases where the edge cubie is in the middle layer
+		else if (cube[_f[5]].getEdge(i - 1, true).getTypeChar() == orientChar.at(i) &&
+			getLeft(i).getColors(1).getTypeChar() == getRight(i).getCenter().getTypeChar())
+		{
+			rotateClockwiseFace(orientChar.at(5));
+			edgeAlgLeft(i + 1);
+		}
+		else if (cube[_f[5]].getEdge(i + 1, true).getTypeChar() == orientChar.at(i) &&
+			getRight(i).getColors(1).getTypeChar() == getRight(i).getCenter().getTypeChar())
+		{
+			rotateCounterClockwiseFace(orientChar.at(5));
+			edgeAlgLeft(i + 1);
+		}
+		else if (cube[_f[5]].getEdge(i - 1, true).getTypeChar() == getRight(i).getCenter().getTypeChar() &&
+			getLeft(i).getColors(1).getTypeChar() == orientChar.at(i))
+		{
+			edgeAlgRight(i);
+		}
+		else if (cube[_f[5]].getEdge(i + 1, true).getTypeChar() == getRight(i).getCenter().getTypeChar() &&
+			getRight(i).getColors(1).getTypeChar() == orientChar.at(i))
+		{
+			rotateClockwiseFace(orientChar.at(5));
+			rotateClockwiseFace(orientChar.at(5));
+			edgeAlgRight(i);
+		}
+		// The three cases where the edge cubie is on the opposite face in the wrong orientation
+		else if (cube[_f[5]].getOppositeEdge(i, true).getTypeChar() == orientChar.at(i) &&
+			getOpposite(i).getColors(1).getTypeChar() == getRight(i).getCenter().getTypeChar())
+		{
+			edgeAlgLeft(i + 1);
+		}
+
+
+		solution += " | ";
+		CubeCube::totalSeq += 1;
+	}
+
+
+}
+
 void CubeCube::solveCube()
 {
 	solveStage1();
 	solveStage2();
+	solveStage3();
 	cout << "Total Moves = " << CubeCube::totalMoves << endl;
 	cout << "Total Sequences = " << CubeCube::totalSeq << endl;
 	cout << getSolution() << endl;
