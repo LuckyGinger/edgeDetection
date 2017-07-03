@@ -1252,7 +1252,41 @@ void CubeCube::solveStage3()
 		{
 			edgeAlgLeft(i + 1);
 		}
-
+		else if (getLeft(i).getColors(3).getTypeChar() == orientChar.at(i) &&
+			getOpposite(i).getColors(5).getTypeChar() == getRight(i).getCenter().getTypeChar())
+		{
+			edgeAlgRight(i + 2);
+			rotateClockwiseFace(orientChar.at(5));
+			edgeAlgRight(i);
+		}
+		else if (getRight(i).getColors(5).getTypeChar() == orientChar.at(i) &&
+			getOpposite(i).getColors(3).getTypeChar() == getRight(i).getCenter().getTypeChar())
+		{
+			edgeAlgRight(i + 1);
+			rotateClockwiseFace(orientChar.at(5));
+			edgeAlgLeft(i + 1);
+		}
+		// The three cases where the edge cubie is on the opposite face and in the "correct" orientation
+		else if (cube[_f[5]].getOppositeEdge(i, true).getTypeChar() == getRight(i).getCenter().getTypeChar() &&
+			getOpposite(i).getColors(1).getTypeChar() == orientChar.at(i))
+		{
+			rotateCounterClockwiseFace(orientChar.at(5));
+			edgeAlgRight(i);
+		}
+		else if (getLeft(i).getColors(3).getTypeChar() == getRight(i).getCenter().getTypeChar() &&
+			getOpposite(i).getColors(5).getTypeChar() == orientChar.at(i))
+		{
+			edgeAlgRight(i + 2);
+			rotateClockwiseFace(orientChar.at(5));
+			rotateClockwiseFace(orientChar.at(5));
+			edgeAlgLeft(i + 1);
+		}
+		else if (getRight(i).getColors(5).getTypeChar() == getRight(i).getCenter().getTypeChar() &&
+			getOpposite(i).getColors(3).getTypeChar() == orientChar.at(i))
+		{
+			edgeAlgRight(i + 1);
+			edgeAlgLeft(i);
+		}
 
 		solution += " | ";
 		CubeCube::totalSeq += 1;
