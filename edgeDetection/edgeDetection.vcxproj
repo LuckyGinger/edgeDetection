@@ -158,6 +158,7 @@
     <Text Include="cubeSave_top3.txt" />
     <Text Include="cubeSave1.txt" />
     <Text Include="pieces.txt" />
+    <Text Include="upFaceMoves.txt" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

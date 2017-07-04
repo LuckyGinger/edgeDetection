@@ -1,6 +1,6 @@
-white,orange,green,yellow,green,blue,blue,blue,blue
-red,red,blue,yellow,orange,white,orange,green,green
-yellow,green,yellow,blue,white,red,orange,green,white
-green,orange,blue,white,red,red,red,red,yellow
-white,blue,yellow,green,yellow,orange,red,yellow,white
-green,orange,red,yellow,blue,white,orange,white,orange
+green,red,blue,blue,green,orange,white,yellow,yellow
+green,red,white,blue,orange,white,red,red,red
+green,yellow,white,red,white,orange,yellow,green,yellow
+blue,blue,yellow,green,red,white,red,white,blue
+green,white,orange,blue,yellow,orange,orange,orange,blue
+white,green,orange,yellow,blue,yellow,red,green,orange

@@ -73,8 +73,13 @@ private:
 	void edgeAlgRight(int i);
 	void edgeAlgLeft(int i);
 
+	string getUpColors();
+	vector<vector<string>> readPossibleCubeStates();
+	bool isFaceSolved(int i);
+
 	void solveStage1();
 	void solveStage2();
 	void solveStage3();
+	void solveStage4();
 };
 

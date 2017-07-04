@@ -45,5 +45,6 @@
     <Text Include="cubeSave1.txt" />
     <Text Include="cubeSave_simpleX.txt" />
     <Text Include="cubeSave_top3.txt" />
+    <Text Include="upFaceMoves.txt" />
   </ItemGroup>
 </Project>

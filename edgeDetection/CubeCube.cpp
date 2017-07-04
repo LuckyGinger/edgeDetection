@@ -471,8 +471,11 @@ void CubeCube::rotateFromFeed(string sMoves)
 	stringstream ssMove(sMoves);
 	vector<string> moves;
 	string move;
+	cout << "----------------------" << endl;
+	cout << sMoves << endl;
 	while (getline(ssMove, move, ','))
 	{
+		cout << move << " ";
 		moves.push_back(move);
 		
 		if (move == "D")
@@ -500,6 +503,7 @@ void CubeCube::rotateFromFeed(string sMoves)
 		else if (move == "U'")
 			rotateCounterClockwiseFace(orientChar.at(5));
 	}
+	cout << endl;
 
 }
 
@@ -1295,11 +1299,127 @@ void CubeCube::solveStage3()
 
 }
 
+string CubeCube::getUpColors()
+{
+	string upColorLocations;
+
+	CubeFace temp = cube[_f[5]];
+	for (int i = 0; i < temp.getMaxColors(); i++)
+	{
+		if (temp.getColors(i).getTypeChar() == orientChar.at(5))
+		{
+			upColorLocations += "1";
+		}
+		else
+		{
+			upColorLocations += "0";
+		}
+	}
+
+	// loop throught middle faces
+	for (int i = 1; i < 5; i++)
+	{
+		// loop through top layer of middle faces
+		for (int j = 0; j < 3; j++)
+		{
+			if (cube[_f[i]].getColors(j).getTypeChar() == orientChar.at(5))
+			{
+				upColorLocations += "1";
+			}
+			else
+			{
+				upColorLocations += "0";
+			}
+		}
+	}
+
+	return upColorLocations;
+}
+
+vector<vector<string>> CubeCube::readPossibleCubeStates()
+{
+	ifstream infile("upFaceMoves.txt");
+
+	string line;
+	string segment;
+	vector<vector<string>> data;
+	while (getline(infile, line))
+	{
+		stringstream ssline(line);
+		vector<string> item;
+
+		while (getline(ssline, segment, '/'))
+		{
+			item.push_back(segment);
+		}
+
+		data.push_back(item);
+	}
+	infile.close();
+
+	return data;
+}
+
+// checks to see if one face is solved... probably should be in CubeFace...
+bool CubeCube::isFaceSolved(int index)
+{
+	char c = cube[_f[index]].getCenter().getTypeChar();
+
+	bool isDiff = false;
+	for (int i = 0; i < cube[_f[index]].getMaxColors(); i++)
+	{
+		if (cube[_f[index]].getColors(i).getTypeChar() != c)
+		{
+			isDiff = true;
+		}
+	}
+
+	return !isDiff;
+}
+
+void CubeCube::solveStage4()
+{
+	cout << "Up Colors = " << getUpColors() << endl;
+
+	vector<vector<string>> cubeStates = readPossibleCubeStates();
+
+	while (!isFaceSolved(5))
+	{
+		for (int i = 0; i < cubeStates.size(); i++)
+		{
+			if (getUpColors() == cubeStates[i][0])
+			{
+				cout << "Up Colors = " << getUpColors() << endl;
+				cout << "This state = " << cubeStates[i][0] << endl;
+				rotateFromFeed(cubeStates[i][1]);
+			}
+		}
+		rotateClockwiseFace(orientChar.at(5));
+	}
+
+
+
+	//displayCube();
+	//cout << "theString: " << cubeStates[0][1] << endl;
+	//rotateFromFeed(cubeStates[0][1]);
+
+
+
+
+		//for (int j = 0; j < cubeStates[i].size(); j++)
+		//{
+		//	cout << cubeStates[i][j] << endl;
+		//	rotateFromFeed(cubeStates[i][1]);
+		//}
+
+}
+
 void CubeCube::solveCube()
 {
 	solveStage1();
 	solveStage2();
 	solveStage3();
+	solveStage4();
 	cout << "Total Moves = " << CubeCube::totalMoves << endl;
 	cout << "Total Sequences = " << CubeCube::totalSeq << endl;
 	cout << getSolution() << endl;
