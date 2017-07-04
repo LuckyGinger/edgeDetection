@@ -1379,6 +1379,10 @@ bool CubeCube::isFaceSolved(int index)
 
 void CubeCube::solveStage4()
 {
+	// Sources: 
+    //  http://www.speedcubing.com/chris/3-orientations.html
+	//  http://www.ai.univ-paris8.fr/~bh/cube/solutions_o1.html
+
 	cout << "Up Colors = " << getUpColors() << endl;
 
 	vector<vector<string>> cubeStates = readPossibleCubeStates();
@@ -1396,22 +1400,6 @@ void CubeCube::solveStage4()
 		}
 		rotateClockwiseFace(orientChar.at(5));
 	}
-
-
-
-	//displayCube();
-	//cout << "theString: " << cubeStates[0][1] << endl;
-	//rotateFromFeed(cubeStates[0][1]);
-
-
-
-
-		//for (int j = 0; j < cubeStates[i].size(); j++)
-		//{
-		//	cout << cubeStates[i][j] << endl;
-		//	rotateFromFeed(cubeStates[i][1]);
-		//}
-
 }
 
 void CubeCube::solveCube()
