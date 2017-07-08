@@ -75,11 +75,17 @@ private:
 
 	string getUpColors();
 	vector<vector<string>> readPossibleCubeStates();
+	vector<string> readFile(string fileName);
 	bool isFaceSolved(int i);
+	bool isCubeSolved();
+
+	CubeCube getObject();
+	void setObject(CubeCube theCube);
 
 	void solveStage1();
 	void solveStage2();
 	void solveStage3();
 	void solveStage4();
+	void solveStage5();
 };
 

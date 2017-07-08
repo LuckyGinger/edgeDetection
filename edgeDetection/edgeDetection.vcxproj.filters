@@ -48,5 +48,6 @@
     <Text Include="upFaceMoves.txt" />
     <Text Include="cubeSave_average.txt" />
     <Text Include="cubeSave_bug.txt" />
+    <Text Include="lastFaceMoves.txt" />
   </ItemGroup>
 </Project>

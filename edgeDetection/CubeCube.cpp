@@ -11,6 +11,16 @@ CubeCube::~CubeCube()
 {
 }
 
+CubeCube CubeCube::getObject()
+{
+	return *this;
+}
+
+void CubeCube::setObject(CubeCube theCube)
+{
+	*this = theCube;
+}
+
 int CubeCube::colortoi(char c)
 {
 	// subtract the the ascii value 0 from the characters 0 - 9
@@ -471,11 +481,11 @@ void CubeCube::rotateFromFeed(string sMoves)
 	stringstream ssMove(sMoves);
 	vector<string> moves;
 	string move;
-	cout << "----------------------" << endl;
-	cout << sMoves << endl;
+//	cout << "----------------------" << endl;
+//	cout << sMoves << endl;
 	while (getline(ssMove, move, ','))
 	{
-		cout << move << " ";
+//		cout << move << " ";
 		moves.push_back(move);
 		
 		if (move == "D")
@@ -503,7 +513,7 @@ void CubeCube::rotateFromFeed(string sMoves)
 		else if (move == "U'")
 			rotateCounterClockwiseFace(orientChar.at(5));
 	}
-	cout << endl;
+	//cout << endl;
 
 }
 
@@ -1286,28 +1296,16 @@ void CubeCube::solveStage3()
 		else if (getLeft(i).getColors(3).getTypeChar() == getRight(i).getCenter().getTypeChar() &&
 			getOpposite(i).getColors(5).getTypeChar() == orientChar.at(i))
 		{
-			cout << "error here 2 at: " << i << endl;
-			cout << "before:" << endl;
-			displayCube();
-
 			edgeAlgRight(i + 2);
 			rotateClockwiseFace(orientChar.at(5));
 			rotateClockwiseFace(orientChar.at(5));
 			edgeAlgLeft(i + 1);
-			
-			cout << "after:" << endl;
-			displayCube();
 		}
 		else if (getRight(i).getColors(5).getTypeChar() == getRight(i).getCenter().getTypeChar() &&
 			getOpposite(i).getColors(3).getTypeChar() == orientChar.at(i))
 		{
-			cout << "error here 3 at: " << i << endl;
-			cout << "before:" << endl;
-			displayCube();
 			edgeAlgRight(i + 1);
 			edgeAlgRight(i);
-			cout << "after:" << endl;
-			displayCube();
 		}
 
 		solution += " | ";
@@ -1378,6 +1376,21 @@ vector<vector<string>> CubeCube::readPossibleCubeStates()
 	return data;
 }
 
+vector<string> CubeCube::readFile(string fileName)
+{
+	ifstream infile(fileName);
+
+	string line;
+	vector<string> data;
+	while (getline(infile, line))
+	{
+		data.push_back(line);
+	}
+	infile.close();
+
+	return data;
+}
+
 // checks to see if one face is solved... probably should be in CubeFace...
 bool CubeCube::isFaceSolved(int index)
 {
@@ -1425,6 +1438,107 @@ void CubeCube::solveStage4()
 		}
 		rotateClockwiseFace(orientChar.at(5));
 	}
+	solution += " | ";
+	CubeCube::totalSeq += 1;
+
+}
+
+bool CubeCube::isCubeSolved()
+{
+	bool isSolved = true;
+	for (int i = 0; i < MAX_FACES; i++)
+	{
+		if (!isFaceSolved(i))
+		{
+			isSolved = false;
+		}
+	}
+	return isSolved;
+}
+
+void CubeCube::solveStage5()
+{
+	cout << "top complete" << endl;
+	displayCube();
+	CubeCube tempSaveCube = this->getObject();
+
+	vector<string> lastMoves = readFile("lastFaceMoves.txt");
+
+	//rotateClockwiseFace('g');
+	//cout << "check1" << endl;
+	//displayCube();
+
+	//this->setObject(tempSaveCube.getObject());
+	//cout << "end check1" << endl;
+	//displayCube();
+	int k = 0;
+	while (!isCubeSolved())
+	{
+		for (int i = 0; i < lastMoves.size(); i++)
+		{
+			if (k == 2 && i == 11)
+			{
+				cout << "first time" << endl;
+				displayCube();
+			}
+			rotateFromFeed(lastMoves[i]);
+			cout << "the move: " << lastMoves[i] << endl;
+			if (k == 2 && i == 11)
+			{
+				cout << "second time" << endl;
+				displayCube();
+			}
+			if (isCubeSolved())
+			{
+				return;
+			}
+			else 
+			{
+				for (int j = 0; j < 4; j++)
+				{
+					rotateClockwiseFace(orientChar.at(5));
+
+					if (k == 2 && i == 11)
+					{
+						cout << "alg num: " << k << " " << i << " " << j << endl;
+						displayCube();
+//						return;
+					}
+
+					if (isCubeSolved())
+					{
+						return;
+					}
+				}
+
+				// start over check
+				this->setObject(tempSaveCube.getObject());
+				for (int i = 0; i < k + 1; i++)
+				{
+					cout << "1rotate " << i << " times" << endl;
+					rotateClockwiseFace(orientChar.at(5));
+				}
+			}
+			if (k == 2 && i == 11)
+			{
+				cout << "alg num: " << i << endl;
+				displayCube();
+				//return;
+			}
+
+		}
+		// none of the moves worked rotate and start over
+		for (int i = 0; i < k + 1; i++)
+		{
+			cout << "2rotate " << i << " times" << endl;
+			rotateClockwiseFace(orientChar.at(5));
+		}
+		cout << k++ << endl;
+	}
+	solution += " | ";
+	CubeCube::totalSeq += 1;
+
+	return;
 }
 
 void CubeCube::solveCube()
@@ -1433,6 +1547,7 @@ void CubeCube::solveCube()
 	solveStage2();
 	solveStage3();
 	solveStage4();
+	solveStage5();
 	cout << "Total Moves = " << CubeCube::totalMoves << endl;
 	cout << "Total Sequences = " << CubeCube::totalSeq << endl;
 	cout << getSolution() << endl;
