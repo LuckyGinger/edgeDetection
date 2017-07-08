@@ -1158,6 +1158,10 @@ void CubeCube::solveStage3()
 	for (int i = 0 + 1; i < 4 + 1; i++)
 	{
 		/*right side cubie*/
+		cout << "------------------------------------" << endl;
+			cout << "SIDE: " << i << endl;
+		displayCube();
+		cout << "------------------------------------" << endl;
 
 		// The three cases when the in the correct orientation but in the wrong place
 		if (cube[_f[i]].getColors(3).getTypeChar() == orientChar.at(i) &&
@@ -1276,20 +1280,34 @@ void CubeCube::solveStage3()
 		{
 			rotateCounterClockwiseFace(orientChar.at(5));
 			edgeAlgRight(i);
+		//	cout << "error here 1" << endl;
+		//	displayCube();
 		}
 		else if (getLeft(i).getColors(3).getTypeChar() == getRight(i).getCenter().getTypeChar() &&
 			getOpposite(i).getColors(5).getTypeChar() == orientChar.at(i))
 		{
+			cout << "error here 2 at: " << i << endl;
+			cout << "before:" << endl;
+			displayCube();
+
 			edgeAlgRight(i + 2);
 			rotateClockwiseFace(orientChar.at(5));
 			rotateClockwiseFace(orientChar.at(5));
 			edgeAlgLeft(i + 1);
+			
+			cout << "after:" << endl;
+			displayCube();
 		}
 		else if (getRight(i).getColors(5).getTypeChar() == getRight(i).getCenter().getTypeChar() &&
 			getOpposite(i).getColors(3).getTypeChar() == orientChar.at(i))
 		{
+			cout << "error here 3 at: " << i << endl;
+			cout << "before:" << endl;
+			displayCube();
 			edgeAlgRight(i + 1);
-			edgeAlgLeft(i);
+			edgeAlgRight(i);
+			cout << "after:" << endl;
+			displayCube();
 		}
 
 		solution += " | ";
@@ -1379,6 +1397,8 @@ bool CubeCube::isFaceSolved(int index)
 
 void CubeCube::solveStage4()
 {
+	// Using the Fridrich's 40 move method... Except I added all mirrors and alt orrientations,
+	//  totalling 98 different top layer cube states.
 	// Sources: 
     //  http://www.speedcubing.com/chris/3-orientations.html
 	//  http://www.ai.univ-paris8.fr/~bh/cube/solutions_o1.html
@@ -1386,6 +1406,11 @@ void CubeCube::solveStage4()
 	cout << "Up Colors = " << getUpColors() << endl;
 
 	vector<vector<string>> cubeStates = readPossibleCubeStates();
+
+
+	//rotateClockwiseFace(orientChar.at(5));
+	cout << getSolution() << endl;
+	displayCube();
 
 	while (!isFaceSolved(5))
 	{

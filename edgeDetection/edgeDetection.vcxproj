@@ -154,6 +154,8 @@
   </ItemGroup>
   <ItemGroup>
     <Text Include="colordata.txt" />
+    <Text Include="cubeSave_average.txt" />
+    <Text Include="cubeSave_bug.txt" />
     <Text Include="cubeSave_simpleX.txt" />
     <Text Include="cubeSave_top3.txt" />
     <Text Include="cubeSave1.txt" />

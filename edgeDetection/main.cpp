@@ -592,7 +592,7 @@ int main(int argc, char* argv[])
 	bool trackObjects = true;
 	bool useMorphOps = true;
 	bool calibrationMode = false;
-	bool loadCube = false;
+	bool loadCube = true;
 	//Matrix to store each frame of the webcam feed
 	Mat cameraFeed;
 	Mat cameraShow;
