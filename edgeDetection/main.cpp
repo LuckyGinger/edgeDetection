@@ -20,6 +20,7 @@
 #include "CubeColor.h"
 #include "CubeFace.h"
 #include "CubeCube.h"
+#include <stdlib.h> 
 
 string globalMessage = "";
 string globalSubMessage = "";
@@ -575,6 +576,25 @@ void drawArrow(Mat image, string direction)
 		return;
 }
 
+void decryption()
+{
+	int number = 0;
+
+	for (long i = 0; i < 100000; i++)
+	{
+		number = rand() % 122 + 65;
+		//number = rand() % 126 + 33;
+		cout << (char)number;
+		if (i % 80 == 0 && i != 0)
+		{
+			cout  << " | " << endl;
+			cout << " | ";
+		}
+	}
+	cout << endl << endl;
+	return;
+}
+
 int main(int argc, char* argv[])
 {
 	int cam = 1;
@@ -592,7 +612,8 @@ int main(int argc, char* argv[])
 	bool trackObjects = true;
 	bool useMorphOps = true;
 	bool calibrationMode = false;
-	bool loadCube = false;
+	bool loadCube = true;
+	bool showDecrypt = false;
 	//Matrix to store each frame of the webcam feed
 	Mat cameraFeed;
 	Mat cameraShow;
@@ -749,12 +770,36 @@ int main(int argc, char* argv[])
 	{
 		// No need for OpenCV opening saved cube
 		cube.loadCube();
-		cube.displayCube();
+		//cube.displayCube();
 	}
+	if (showDecrypt)
+		decryption();
+	cout << "Original Cube State: " << endl;
+	cube.displayCube();
 
 	cube.solveCube();
-
+	
+	cout << "Final Cube State: " << endl;
 	cube.displayCube();
+
+	cube.displayRules();
+
+	cout << endl;
+	cout << "    Total Moves = " << cube.getTotalMoves() << endl;
+	cout << "    Total Sequences = " << cube.getTotalSeq() << endl;
+	cout << endl;
+	string sol = cube.getSolution();
+	cout << " Solution: " << endl;
+	cout << "  ";
+	for (int i = 0; i < sol.size(); i++)
+	{
+		cout << sol.at(i);
+		if (i % 80 == 0 && i != 0)
+		{
+			cout << endl << "  ";
+		}
+	}
+	cout << endl << endl;
 
 	while (true)
 	{

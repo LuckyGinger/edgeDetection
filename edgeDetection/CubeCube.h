@@ -27,6 +27,11 @@ public:
 	void solveCube();
 	string getSolution();
 
+	int getTotalMoves();
+	int getTotalSeq();
+
+	void displayRules();
+
 private:
 	static const int MAX_FACES = 6;
 	CubeFace cube[MAX_FACES];
@@ -55,6 +60,8 @@ private:
 	int colortoi(char c);
 
 	string saveFileName = "cubeSave.txt";
+
+
 
 	void orientFaces();
 	void setOrient(char color);  // take the bottom color

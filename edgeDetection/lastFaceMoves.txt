@@ -1,8 +1,9 @@
+U,U,R,R,U,F,B',R,R,F',B,U,R,R,U,U,R',F,R',B,B,R,F',R',B,B,R,R
 R,R,U,F,B',R,R,F',B,U,R,R
 R,R,U',F,B',R,R,F',B,U',R,R
 R,R,B,B,R,F,R',B,B,R,F',R
 R',F,R',B,B,R,F',R',B,B,R,R
-R,B',R',B,,F,R',F,B',R',B,R,F,F,U
+R,B',R',B,F,R',F,B',R',B,R,F,F,U
 R,R,B,B,F,F,L,L,D',R,R,B,B,F,F,L,L,U
 F,R',F',L,F,R,F',L,L,B',R,B,L,B',R',B
 U',L,L,D,F,F,D',L,L,B,B,D',R,R,D,B,B
@@ -11,6 +12,6 @@ L,L,F',L,D,D,R',B,R,D,D,L,B,L,F,L',B'
 U',B',U,U,B,U',R',F,R,B',R',F',R,U',B
 B,B,L,U,L',B,B,R,D',R,D,R,R
 R,B,U',B',R,D,B',L',B',L,B,B,D',R,R
-F,U,F',L,L,D',B,U',B',U,B',,D,L,L
+F,U,F',L,L,D',B,U',B',U,B',D,L,L
 L,L,D',B,U',B,U,B',D,L,L,F,U',F'
 R,U',R,R,F,F,U',R,F,F,R',U,F,F,R,R,U,R',U'

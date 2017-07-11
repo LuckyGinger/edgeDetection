@@ -481,13 +481,13 @@ void CubeCube::rotateFromFeed(string sMoves)
 	stringstream ssMove(sMoves);
 	vector<string> moves;
 	string move;
-//	cout << "----------------------" << endl;
-//	cout << sMoves << endl;
+	//	cout << "----------------------" << endl;
+	//	cout << sMoves << endl;
 	while (getline(ssMove, move, ','))
 	{
-//		cout << move << " ";
+		//		cout << move << " ";
 		moves.push_back(move);
-		
+
 		if (move == "D")
 			rotateClockwiseFace(orientChar.at(0));
 		else if (move == "L")
@@ -521,6 +521,31 @@ string CubeCube::getSolution()
 {
 	return CubeCube::solution;
 }
+//string CubeCube::getSolution()
+//{
+//	stringstream ssMove(solution);
+//	vector<string> moves;
+//	string move;
+//	string nextMove;
+//	while (getline(ssMove, move, ','))
+//	{
+//		moves.push_back(move);
+//	}
+//
+//	for (int i = 0; i < solution.size(); i++)
+//	{
+//		if (i != 0 && i != solution.size())
+//		{
+//			if (solution.at(i) == solution.at(i + 1))
+//			{
+//
+//			}
+//			
+//		}
+//	}
+//
+//	return CubeCube::solution;
+//}
 
 
 // This is a super poor way of handling this.
@@ -1168,10 +1193,10 @@ void CubeCube::solveStage3()
 	for (int i = 0 + 1; i < 4 + 1; i++)
 	{
 		/*right side cubie*/
-		cout << "------------------------------------" << endl;
-			cout << "SIDE: " << i << endl;
-		displayCube();
-		cout << "------------------------------------" << endl;
+		//cout << "------------------------------------" << endl;
+		//	cout << "SIDE: " << i << endl;
+		//displayCube();
+		//cout << "------------------------------------" << endl;
 
 		// The three cases when the in the correct orientation but in the wrong place
 		if (cube[_f[i]].getColors(3).getTypeChar() == orientChar.at(i) &&
@@ -1416,14 +1441,14 @@ void CubeCube::solveStage4()
     //  http://www.speedcubing.com/chris/3-orientations.html
 	//  http://www.ai.univ-paris8.fr/~bh/cube/solutions_o1.html
 
-	cout << "Up Colors = " << getUpColors() << endl;
+	//cout << "Up Colors = " << getUpColors() << endl;
 
 	vector<vector<string>> cubeStates = readPossibleCubeStates();
 
 
 	//rotateClockwiseFace(orientChar.at(5));
-	cout << getSolution() << endl;
-	displayCube();
+	//cout << getSolution() << endl;
+	//displayCube();
 
 	while (!isFaceSolved(5))
 	{
@@ -1431,8 +1456,8 @@ void CubeCube::solveStage4()
 		{
 			if (getUpColors() == cubeStates[i][0])
 			{
-				cout << "Up Colors = " << getUpColors() << endl;
-				cout << "This state = " << cubeStates[i][0] << endl;
+				//cout << "Up Colors = " << getUpColors() << endl;
+				//cout << "This state = " << cubeStates[i][0] << endl;
 				rotateFromFeed(cubeStates[i][1]);
 			}
 		}
@@ -1458,8 +1483,8 @@ bool CubeCube::isCubeSolved()
 
 void CubeCube::solveStage5()
 {
-	cout << "top complete" << endl;
-	displayCube();
+	//cout << "top complete" << endl;
+	//displayCube();
 	CubeCube tempSaveCube = this->getObject();
 
 	vector<string> lastMoves = readFile("lastFaceMoves.txt");
@@ -1476,17 +1501,17 @@ void CubeCube::solveStage5()
 	{
 		for (int i = 0; i < lastMoves.size(); i++)
 		{
-			if (k == 2 && i == 11)
-			{
-				cout << "first time" << endl;
-				displayCube();
-			}
+			//if (k == 2 && i == 11)
+			//{
+			//	cout << "first time" << endl;
+			//	displayCube();
+			//}
 			rotateFromFeed(lastMoves[i]);
-			cout << "the move: " << lastMoves[i] << endl;
-			if (k == 2 && i == 11)
+			//cout << "the move: " << lastMoves[i] << endl;
+			if (i == 1)
 			{
-				cout << "second time" << endl;
-				displayCube();
+				//cout << "second time" << endl;
+				//displayCube();
 			}
 			if (isCubeSolved())
 			{
@@ -1500,8 +1525,8 @@ void CubeCube::solveStage5()
 
 					if (k == 2 && i == 11)
 					{
-						cout << "alg num: " << k << " " << i << " " << j << endl;
-						displayCube();
+						//cout << "alg num: " << k << " " << i << " " << j << endl;
+						//displayCube();
 //						return;
 					}
 
@@ -1515,14 +1540,14 @@ void CubeCube::solveStage5()
 				this->setObject(tempSaveCube.getObject());
 				for (int i = 0; i < k + 1; i++)
 				{
-					cout << "1rotate " << i << " times" << endl;
+					//cout << "1rotate " << i << " times" << endl;
 					rotateClockwiseFace(orientChar.at(5));
 				}
 			}
 			if (k == 2 && i == 11)
 			{
-				cout << "alg num: " << i << endl;
-				displayCube();
+				//cout << "alg num: " << i << endl;
+				//displayCube();
 				//return;
 			}
 
@@ -1530,15 +1555,26 @@ void CubeCube::solveStage5()
 		// none of the moves worked rotate and start over
 		for (int i = 0; i < k + 1; i++)
 		{
-			cout << "2rotate " << i << " times" << endl;
+			//cout << "2rotate " << i << " times" << endl;
 			rotateClockwiseFace(orientChar.at(5));
 		}
-		cout << k++ << endl;
+		k++;
+		//cout << k++ << endl;
 	}
 	solution += " | ";
 	CubeCube::totalSeq += 1;
 
 	return;
+}
+
+int CubeCube::getTotalMoves()
+{
+	return CubeCube::totalMoves;
+}
+
+int CubeCube::getTotalSeq()
+{
+	return CubeCube::totalSeq;
 }
 
 void CubeCube::solveCube()
@@ -1548,9 +1584,9 @@ void CubeCube::solveCube()
 	solveStage3();
 	solveStage4();
 	solveStage5();
-	cout << "Total Moves = " << CubeCube::totalMoves << endl;
-	cout << "Total Sequences = " << CubeCube::totalSeq << endl;
-	cout << getSolution() << endl;
+	//cout << "Total Moves = " << CubeCube::totalMoves << endl;
+	//cout << "Total Sequences = " << CubeCube::totalSeq << endl;
+	//cout << getSolution() << endl;
 }
 
 
@@ -1717,6 +1753,19 @@ void CubeCube::setFace(CubeFace theFace)
 	//orientFaces();
 }
 
+void CubeCube::displayRules()
+{
+	cout << " The Faces: " << endl;
+	cout << "  Down  (D) = " << cube[_f[0]].getCenter().getType() << endl;
+	cout << "  Left  (L) = " << cube[_f[1]].getCenter().getType() << endl;
+	cout << "  Front (F) = " << cube[_f[2]].getCenter().getType() << endl;
+	cout << "  Right (R) = " << cube[_f[3]].getCenter().getType() << endl;
+	cout << "  Back  (B) = " << cube[_f[4]].getCenter().getType() << endl;
+	cout << "  Up    (U) = " << cube[_f[5]].getCenter().getType() << endl;
+	cout << endl;
+	cout << "  Letters marked with a prime like R' is a counter clockwise turn of that face otherwise" << endl;
+	cout << "  all turns are clockwise." << endl;
+}
 
 void CubeCube::displayCube()
 {
